@@ -1,16 +1,26 @@
 // ============================================================
-// Service: Email — Envio de e-mails via Resend API
-// Responsabilidade única: envio de mensagens sem bloqueios SMTP
+// Service: Email — Envio de e-mails via Nodemailer
+// Responsabilidade única: criação de transporter e envio de mensagens
 // ============================================================
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 /**
- * Cria a instância do cliente Resend
- * @returns {Resend}
+ * Cria um transporter Nodemailer a partir das variáveis de ambiente.
+ * @returns {nodemailer.Transporter}
  */
-function criarClienteResend() {
-  // A chave será buscada da variável de ambiente RESEND_API_KEY
-  return new Resend(process.env.RESEND_API_KEY);
+function criarTransporter() {
+  const port = Number(process.env.EMAIL_PORT) || 2525;
+  
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: port,
+    secure: port === 465, // SSL apenas se for porta 465, senão TLS (2525/587)
+    connectionTimeout: 10000,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 }
 
 /**
@@ -23,13 +33,13 @@ function criarClienteResend() {
 async function enviarConvite({ nome, email, token }) {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   const linkConvite = `${frontendUrl}/definir-senha?token=${token}`;
-  const resend = criarClienteResend();
+  const transporter = criarTransporter();
 
   try {
-    console.log(`[Email] Iniciando envio de convite (via Resend) para ${email}...`);
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Mais Alegria <onboarding@resend.dev>',
-      to: [email],
+    console.log(`[Email] Iniciando envio de convite para ${email}...`);
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: email,
       subject: '🎉 Você foi convidado para o sistema Mais Alegria!',
       html: `
         <div style="font-family: Inter, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px; background: #fdfcf5; border-radius: 16px;">
@@ -60,12 +70,7 @@ async function enviarConvite({ nome, email, token }) {
         </div>
       `,
     });
-
-    if (error) {
-      throw error;
-    }
-
-    console.log(`[Email] Convite enviado com sucesso! ID: ${data.id}`);
+    console.log(`[Email] Convite enviado com sucesso! Message ID: ${info.messageId}`);
   } catch (error) {
     console.error(`[Email] Erro ao enviar convite para ${email}:`, error);
     throw error;
@@ -82,13 +87,13 @@ async function enviarConvite({ nome, email, token }) {
 async function enviarEmailRecuperacaoSenha({ nome, email, token }) {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   const linkReset = `${frontendUrl}/redefinir-senha?token=${token}`;
-  const resend = criarClienteResend();
+  const transporter = criarTransporter();
 
   try {
-    console.log(`[Email] Iniciando envio de recuperação (via Resend) para ${email}...`);
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Mais Alegria <onboarding@resend.dev>',
-      to: [email],
+    console.log(`[Email] Iniciando envio de recuperação para ${email}...`);
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: email,
       subject: '🔒 Redefinição de senha - Mais Alegria',
       html: `
         <div style="font-family: Inter, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 24px; background: #fdfcf5; border-radius: 16px;">
@@ -119,12 +124,7 @@ async function enviarEmailRecuperacaoSenha({ nome, email, token }) {
         </div>
       `,
     });
-
-    if (error) {
-      throw error;
-    }
-
-    console.log(`[Email] Recuperação enviada com sucesso! ID: ${data.id}`);
+    console.log(`[Email] Recuperação enviada com sucesso! Message ID: ${info.messageId}`);
   } catch (error) {
     console.error(`[Email] Erro ao enviar recuperação para ${email}:`, error);
     throw error;
