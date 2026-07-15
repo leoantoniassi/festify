@@ -16,7 +16,7 @@ export default function ClientesPage() {
   const [search, setSearch] = useState('');
   const [showPanel, setShowPanel] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ nome: '', email: '', telefone: '', rgCpf: '' });
+  const [form, setForm] = useState({ nome: '', email: '', telefone: '', telefoneResidencial: '', rgCpf: '' });
   const [toast, setToast] = useState(null);
   const { executeDelete } = useDeleteWithConfirm();
 
@@ -53,7 +53,7 @@ export default function ClientesPage() {
       }
       setShowPanel(false);
       setEditing(null);
-      setForm({ nome: '', email: '', telefone: '', rgCpf: '' });
+      setForm({ nome: '', email: '', telefone: '', telefoneResidencial: '', rgCpf: '' });
       fetchClientes();
     } catch (err) {
       if (err.response?.data?.action === 'reactivate') {
@@ -64,7 +64,7 @@ export default function ClientesPage() {
             setToast({ type: 'success', message: 'Cliente reativado com sucesso!' });
             setShowPanel(false);
             setEditing(null);
-            setForm({ nome: '', email: '', telefone: '', rgCpf: '' });
+            setForm({ nome: '', email: '', telefone: '', telefoneResidencial: '', rgCpf: '' });
             fetchClientes();
           } catch (reactivateErr) {
             await confirm(reactivateErr.response?.data?.message || 'Erro ao reativar cliente', { title: 'Erro', showCancel: false });
@@ -77,7 +77,7 @@ export default function ClientesPage() {
   };
 
   const handleEdit = (c) => {
-    setForm({ nome: c.nome, email: c.email, telefone: c.telefone, rgCpf: c.rgCpf });
+    setForm({ nome: c.nome, email: c.email || '', telefone: c.telefone, telefoneResidencial: c.telefoneResidencial || '', rgCpf: c.rgCpf });
     setEditing(c.id);
     setShowPanel(true);
   };
@@ -142,7 +142,7 @@ export default function ClientesPage() {
             <p className="text-on-surface-variant">Gerencie os organizadores de eventos e parceiros corporativos.</p>
           </div>
           <button
-            onClick={() => { setEditing(null); setForm({ nome: '', email: '', telefone: '', rgCpf: '' }); setShowPanel(true); }}
+            onClick={() => { setEditing(null); setForm({ nome: '', email: '', telefone: '', telefoneResidencial: '', rgCpf: '' }); setShowPanel(true); }}
             className="bg-primary text-on-primary px-8 py-3 rounded-full font-bold flex items-center gap-2 shadow-xl shadow-primary/30 hover:scale-[1.05] active:scale-95 transition-all"
           >
             <span className="material-symbols-outlined">add_circle</span>
@@ -175,6 +175,7 @@ export default function ClientesPage() {
                   <th className="px-6 py-5">Nome &amp; Email</th>
                   <th className="px-6 py-5">CPF/CNPJ</th>
                   <th className="px-6 py-5">Telefone</th>
+                  <th className="px-6 py-5">Tel. Residencial</th>
                   <th className="px-6 py-5 text-right">Ações</th>
                 </tr>
               </thead>
@@ -197,6 +198,7 @@ export default function ClientesPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-on-surface-variant font-mono">{formatCpfCnpj(c.rgCpf)}</td>
                     <td className="px-6 py-4 text-sm text-on-surface-variant">{c.telefone}</td>
+                    <td className="px-6 py-4 text-sm text-on-surface-variant">{c.telefoneResidencial || '-'}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button onClick={() => handleWhatsApp(c.id)} className="w-9 h-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center hover:scale-110 transition-all shadow-md shadow-secondary/20" title="WhatsApp">
@@ -254,14 +256,20 @@ export default function ClientesPage() {
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Nome Completo</label>
                   <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="Ex: Maria Silva" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} required />
                 </div>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email <span className="lowercase font-normal text-on-surface-variant/60">(opcional)</span></label>
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email</label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Celular</label>
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 98765-4321" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Telefone</label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 98765-4321" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Tel. Residencial <span className="lowercase font-normal text-on-surface-variant/60">(opcional)</span></label>
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 3333-3333" value={form.telefoneResidencial} onChange={(e) => setForm({ ...form, telefoneResidencial: e.target.value })} />
                   </div>
                 </div>
                 <div className="space-y-2">

@@ -913,15 +913,15 @@ export default function EventosPage() {
                 <div className="grid grid-cols-4 gap-3">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-2">Total</label>
-                    <input type="number" className="w-full bg-surface-container-low border-none rounded-full py-3 px-4 focus:ring-2 focus:ring-primary text-center" placeholder="0" value={form.qtdPessoas || ""} onChange={e => setForm({ ...form, qtdPessoas: e.target.value === '' ? 0 : Number(e.target.value) })} required />
+                    <input type="number" className="w-full bg-surface-container-low border-none rounded-full py-3 px-4 focus:ring-2 focus:ring-primary text-center opacity-70 cursor-not-allowed" placeholder="0" value={(form.qtdAdultos || 0) + (form.qtdCriancas || 0) + (form.qtdBebes || 0)} readOnly />
                   </div>
-                  {capacidadeLocal && form.qtdPessoas > 0 && form.qtdPessoas > capacidadeLocal && (
+                  {capacidadeLocal && ((form.qtdAdultos || 0) + (form.qtdCriancas || 0) + (form.qtdBebes || 0)) > 0 && ((form.qtdAdultos || 0) + (form.qtdCriancas || 0) + (form.qtdBebes || 0)) > capacidadeLocal && (
                     <div className="col-span-4 p-3 bg-error/10 border border-error/20 rounded-2xl flex items-start gap-2">
                       <span className="material-symbols-outlined text-error text-base mt-0.5">warning</span>
                       <div>
                         <p className="text-sm font-bold text-error">Capacidade excedida!</p>
                         <p className="text-xs text-error/80">
-                          O total de convidados ({form.qtdPessoas}) ultrapassa a capacidade máxima do local ({capacidadeLocal} pessoas).
+                          O total de convidados ({(form.qtdAdultos || 0) + (form.qtdCriancas || 0) + (form.qtdBebes || 0)}) ultrapassa a capacidade máxima do local ({capacidadeLocal} pessoas).
                         </p>
                       </div>
                     </div>

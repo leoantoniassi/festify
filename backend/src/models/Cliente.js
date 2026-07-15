@@ -18,7 +18,7 @@ const Cliente = sequelize.define('Cliente', {
   },
   email: {
     type: DataTypes.STRING(150),
-    allowNull: false,
+    allowNull: true,
     unique: true,
     field: 'cli_email',
   },
@@ -32,6 +32,11 @@ const Cliente = sequelize.define('Cliente', {
     type: DataTypes.STRING(20),
     allowNull: false,
     field: 'cli_telefone',
+  },
+  telefoneResidencial: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+    field: 'cli_telefone_residencial',
   },
   criadoEm: {
     type: DataTypes.DATE,

@@ -217,10 +217,13 @@ async function criar(req, res, next) {
       });
     }
 
-    if (qtdPessoas === undefined || qtdPessoas === null || qtdPessoas < 0) {
+    const somaConvidados = (qtdAdultos || 0) + (qtdCriancas || 0) + (qtdBebes || 0);
+    const finalQtdPessoas = somaConvidados > 0 ? somaConvidados : (qtdPessoas || 0);
+
+    if (finalQtdPessoas < 0) {
       return res.status(400).json({
         success: false,
-        message: "O campo Total de Pessoas é obrigatório e deve ser um número não negativo.",
+        message: "O campo Total de Pessoas deve ser um número não negativo.",
       });
     }
 
@@ -249,11 +252,11 @@ async function criar(req, res, next) {
       if (!localExiste) {
         return res.status(404).json({ success: false, message: "Local não encontrado." });
       }
-      const warnCapacidade = gerarWarningCapacidade(localExiste, qtdPessoas);
+      const warnCapacidade = gerarWarningCapacidade(localExiste, finalQtdPessoas);
       if (warnCapacidade) warnings.push(warnCapacidade);
     }
     
-    const warnPessoas = gerarWarningPessoas(qtdPessoas, qtdAdultos, qtdCriancas, qtdBebes);
+    const warnPessoas = gerarWarningPessoas(finalQtdPessoas, qtdAdultos, qtdCriancas, qtdBebes);
     if (warnPessoas) warnings.push(warnPessoas);
     
     let warning = warnings.length > 0 ? warnings.join(' ') : undefined;
@@ -273,7 +276,7 @@ async function criar(req, res, next) {
       dataEvento,
       horarioTermino,
       status: statusFinal,
-      qtdPessoas,
+      qtdPessoas: finalQtdPessoas,
       qtdAdultos,
       qtdCriancas,
       qtdBebes,
@@ -335,29 +338,29 @@ async function atualizar(req, res, next) {
       }
     }
 
-    const novaQtdPessoas = qtdPessoas !== undefined ? qtdPessoas : evento.qtdPessoas;
+    const novaQtdAdultos = qtdAdultos !== undefined ? qtdAdultos : evento.qtdAdultos;
+    const novaQtdCriancas = qtdCriancas !== undefined ? qtdCriancas : evento.qtdCriancas;
+    const novaQtdBebes = qtdBebes !== undefined ? qtdBebes : evento.qtdBebes;
+
+    const somaConvidados = (novaQtdAdultos || 0) + (novaQtdCriancas || 0) + (novaQtdBebes || 0);
+    const finalQtdPessoas = somaConvidados > 0 ? somaConvidados : (qtdPessoas !== undefined ? qtdPessoas : evento.qtdPessoas);
 
     if (localId !== undefined && localId !== null) {
       const localExiste = await Local.findByPk(localId);
       if (!localExiste) {
         return res.status(404).json({ success: false, message: "Local não encontrado." });
       }
-      const warnCapacidade = gerarWarningCapacidade(localExiste, novaQtdPessoas);
+      const warnCapacidade = gerarWarningCapacidade(localExiste, finalQtdPessoas);
       if (warnCapacidade) warnings.push(warnCapacidade);
     } else if (evento.localId) {
-      // Se não mudou o local mas mudou a quantidade de pessoas, precisamos checar a capacidade do local atual
       const localAtual = await Local.findByPk(evento.localId);
       if (localAtual) {
-        const warnCapacidade = gerarWarningCapacidade(localAtual, novaQtdPessoas);
+        const warnCapacidade = gerarWarningCapacidade(localAtual, finalQtdPessoas);
         if (warnCapacidade) warnings.push(warnCapacidade);
       }
     }
 
-    const novaQtdAdultos = qtdAdultos !== undefined ? qtdAdultos : evento.qtdAdultos;
-    const novaQtdCriancas = qtdCriancas !== undefined ? qtdCriancas : evento.qtdCriancas;
-    const novaQtdBebes = qtdBebes !== undefined ? qtdBebes : evento.qtdBebes;
-
-    const warnPessoas = gerarWarningPessoas(novaQtdPessoas, novaQtdAdultos, novaQtdCriancas, novaQtdBebes);
+    const warnPessoas = gerarWarningPessoas(finalQtdPessoas, novaQtdAdultos, novaQtdCriancas, novaQtdBebes);
     if (warnPessoas) warnings.push(warnPessoas);
 
     let warning = warnings.length > 0 ? warnings.join(' ') : undefined;
@@ -377,7 +380,7 @@ async function atualizar(req, res, next) {
       nome:           coalesce(nome, evento.nome),
       dataEvento:     coalesce(dataEvento, evento.dataEvento),
       horarioTermino: coalesce(horarioTermino, evento.horarioTermino),
-      qtdPessoas:     coalesce(qtdPessoas, evento.qtdPessoas),
+      qtdPessoas:     finalQtdPessoas,
       qtdAdultos:     coalesce(qtdAdultos, evento.qtdAdultos),
       qtdCriancas:    coalesce(qtdCriancas, evento.qtdCriancas),
       qtdBebes:       coalesce(qtdBebes, evento.qtdBebes),

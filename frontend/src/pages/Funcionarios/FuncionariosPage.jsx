@@ -14,7 +14,7 @@ export default function FuncionariosPage() {
   const [search, setSearch] = useState('');
   const [showPanel, setShowPanel] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ nome: '', email: '', telefone: '', funcaoId: '' });
+  const [form, setForm] = useState({ nome: '', email: '', telefone: '', telefoneResidencial: '', funcaoId: '' });
   const [funcoes, setFuncoes] = useState([]);
   const [toast, setToast] = useState(null);
   const { executeDelete } = useDeleteWithConfirm();
@@ -60,11 +60,11 @@ export default function FuncionariosPage() {
     try {
       if (editing) await api.put(`/funcionarios/${editing}`, form);
       else await api.post('/funcionarios', form);
-      setShowPanel(false); setEditing(null); setForm({ nome: '', email: '', telefone: '', funcaoId: '' }); fetchData();
+      setShowPanel(false); setEditing(null); setForm({ nome: '', email: '', telefone: '', telefoneResidencial: '', funcaoId: '' }); fetchData();
     } catch (err) { await confirm(err.response?.data?.message || 'Erro ao salvar', { title: 'Erro', showCancel: false }); }
   };
 
-  const handleEdit = (f) => { setForm({ nome: f.nome, email: f.email, telefone: f.telefone, funcaoId: f.funcaoId || f.funcao?.id || '' }); setEditing(f.id); setShowPanel(true); };
+  const handleEdit = (f) => { setForm({ nome: f.nome, email: f.email || '', telefone: f.telefone || '', telefoneResidencial: f.telefoneResidencial || '', funcaoId: f.funcaoId || f.funcao?.id || '' }); setEditing(f.id); setShowPanel(true); };
   const handleDelete = async (id) => {
     const toast = await executeDelete(id, '/funcionarios', 'Funcionário', fetchData);
     if (toast) {
@@ -102,7 +102,7 @@ export default function FuncionariosPage() {
           <h2 className="text-4xl font-extrabold text-on-surface tracking-tight font-headline">Colaboradores</h2>
           <p className="text-on-surface-variant font-medium">Gerencie sua equipe de festas e eventos.</p>
         </div>
-        <button onClick={() => { setEditing(null); setForm({ nome: '', email: '', telefone: '', funcaoId: '' }); setShowPanel(true); }} className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
+        <button onClick={() => { setEditing(null); setForm({ nome: '', email: '', telefone: '', telefoneResidencial: '', funcaoId: '' }); setShowPanel(true); }} className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
           <span className="material-symbols-outlined">person_add</span> Novo Colaborador
         </button>
       </div>
@@ -123,6 +123,7 @@ export default function FuncionariosPage() {
                 <tr className="text-on-surface-variant text-xs uppercase tracking-widest font-bold border-b border-surface-container-high">
                   <th className="pb-4 px-4">Nome & Perfil</th>
                   <th className="pb-4 px-4">Contato</th>
+                  <th className="pb-4 px-4">Tel. Residencial</th>
                   <th className="pb-4 px-4">Função</th>
                   <th className="pb-4 px-4 text-right">Ações</th>
                 </tr>
@@ -137,7 +138,8 @@ export default function FuncionariosPage() {
                         <div><p className="font-bold text-sm text-on-surface">{f.nome}</p><p className="text-[11px] text-on-surface-variant">ID: #{String(f.id).slice(0, 8)}</p></div>
                       </div>
                     </td>
-                    <td className="px-4 py-4"><p className="text-sm font-medium text-on-surface">{f.email}</p><p className="text-xs text-on-surface-variant">{f.telefone}</p></td>
+                    <td className="px-4 py-4"><p className="text-sm font-medium text-on-surface">{f.email || '-'}</p><p className="text-xs text-on-surface-variant">{f.telefone || '-'}</p></td>
+                    <td className="px-4 py-4 text-sm text-on-surface-variant">{f.telefoneResidencial || '-'}</td>
                     <td className="px-4 py-4"><span className={`px-2.5 py-0.5 ${funcaoColor(f.funcao?.nome)} text-[11px] font-bold rounded-full uppercase tracking-tight`}>{f.funcao?.nome || '—'}</span></td>
                     <td className="px-4 py-4 text-right">
                       <div className="flex justify-end gap-1">
@@ -246,8 +248,11 @@ export default function FuncionariosPage() {
             <div className="flex-1 overflow-y-auto p-8">
               <form id="func-form" className="space-y-6" onSubmit={handleSave}>
                 <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Nome</label><input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.nome} onChange={e => setForm({...form, nome: e.target.value})} required /></div>
-                <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email</label><input type="email" className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.email} onChange={e => setForm({...form, email: e.target.value})} required /></div>
-                <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Telefone</label><input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.telefone} onChange={e => setForm({...form, telefone: e.target.value})} required /></div>
+                <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email <span className="lowercase font-normal text-on-surface-variant/60">(opcional)</span></label><input type="email" className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.email} onChange={e => setForm({...form, email: e.target.value})} /></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Celular</label><input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.telefone} onChange={e => setForm({...form, telefone: e.target.value})} required /></div>
+                  <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Tel. Resid. <span className="lowercase font-normal text-on-surface-variant/60">(opc)</span></label><input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.telefoneResidencial} onChange={e => setForm({...form, telefoneResidencial: e.target.value})} /></div>
+                </div>
                 <div className="space-y-2"><label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Função</label>
                   <select className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:ring-2 focus:ring-primary" value={form.funcaoId} onChange={e => setForm({...form, funcaoId: e.target.value})} required>
                     <option value="">Selecione...</option>

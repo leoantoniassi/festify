@@ -393,7 +393,7 @@ export default function OrcamentosPage() {
                 <div className="grid grid-cols-4 gap-3">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-2">Total</label>
-                    <input type="number" className="w-full bg-surface-container-low border-none rounded-full py-3 px-4 focus:ring-2 focus:ring-primary text-center" placeholder="0" value={form.qtdPessoas || ""} onChange={e => setForm({ ...form, qtdPessoas: e.target.value === '' ? 0 : Number(e.target.value) })} required />
+                    <input type="number" className="w-full bg-surface-container-low border-none rounded-full py-3 px-4 focus:ring-2 focus:ring-primary text-center opacity-70 cursor-not-allowed" placeholder="0" value={(form.qtdAdultos || 0) + (form.qtdCriancas || 0) + (form.qtdBebes || 0)} readOnly />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-2">Adultos</label>

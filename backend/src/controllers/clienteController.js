@@ -79,18 +79,25 @@ async function buscarPorId(req, res, next) {
 // POST /api/clientes
 async function criar(req, res, next) {
   try {
-    const { nome, email, rgCpf, telefone } = req.body;
+    const { nome, email, rgCpf, telefone, telefoneResidencial } = req.body;
 
-    if (!nome || !email || !rgCpf || !telefone) {
+    if (!nome || !rgCpf || !telefone) {
       return res.status(400).json({
         success: false,
-        message: 'Nome, email, RG/CPF e telefone são obrigatórios.',
+        message: 'Nome, RG/CPF e telefone celular são obrigatórios.',
       });
+    }
+
+    const emailTratado = email ? email.trim() : null;
+
+    const whereConditions = [{ rgCpf }];
+    if (emailTratado) {
+      whereConditions.push({ email: emailTratado });
     }
 
     const clienteExistente = await Cliente.scope('comDeletados').findOne({
       where: {
-        [Op.or]: [{ email }, { rgCpf }]
+        [Op.or]: whereConditions
       }
     });
 
@@ -104,14 +111,14 @@ async function criar(req, res, next) {
         });
       }
       
-      const campo = clienteExistente.email === email ? 'email' : 'documento';
+      const campo = (emailTratado && clienteExistente.email === emailTratado) ? 'email' : 'documento';
       return res.status(400).json({
         success: false,
         message: `Já existe um cliente ativo com este ${campo}.`,
       });
     }
 
-    const cliente = await Cliente.create({ nome, email, rgCpf, telefone });
+    const cliente = await Cliente.create({ nome, email: emailTratado, rgCpf, telefone, telefoneResidencial });
 
     return res.status(201).json({
       success: true,
@@ -137,12 +144,20 @@ async function atualizar(req, res, next) {
       });
     }
 
-    const { nome, email, rgCpf, telefone } = req.body;
+    const { nome, email, rgCpf, telefone, telefoneResidencial } = req.body;
+    
+    // Se o email vier na req como string vazia, salva como null
+    let emailUpdate = cliente.email;
+    if (email !== undefined) {
+      emailUpdate = email ? email.trim() : null;
+    }
+
     await cliente.update({
       nome: nome || cliente.nome,
-      email: email || cliente.email,
+      email: emailUpdate,
       rgCpf: rgCpf || cliente.rgCpf,
       telefone: telefone || cliente.telefone,
+      telefoneResidencial: telefoneResidencial !== undefined ? telefoneResidencial : cliente.telefoneResidencial,
       atualizadoEm: new Date(),
     });
 

@@ -80,13 +80,22 @@ async function buscarPorId(req, res, next) {
 // POST /api/funcionarios
 async function criar(req, res, next) {
   try {
-    const { nome, email, telefone, funcaoId } = req.body;
+    const { nome, email, telefone, telefoneResidencial, funcaoId } = req.body;
 
-    if (!nome || !email || !funcaoId) {
+    if (!nome || !funcaoId) {
       return res.status(400).json({
         success: false,
-        message: 'Nome, email e função são obrigatórios.',
+        message: 'Nome e função são obrigatórios.',
       });
+    }
+
+    const emailTratado = email ? email.trim() : null;
+    
+    if (emailTratado) {
+      const emailExiste = await Funcionario.findOne({ where: { email: emailTratado } });
+      if (emailExiste) {
+        return res.status(400).json({ success: false, message: 'Já existe um funcionário com este email.' });
+      }
     }
 
     const funcaoExiste = await Funcao.findByPk(funcaoId);
@@ -94,7 +103,7 @@ async function criar(req, res, next) {
       return res.status(404).json({ success: false, message: 'Função não encontrada.' });
     }
 
-    const funcionario = await Funcionario.create({ nome, email, telefone, funcaoId });
+    const funcionario = await Funcionario.create({ nome, email: emailTratado, telefone, telefoneResidencial, funcaoId });
     const funcionarioCompleto = await Funcionario.findByPk(funcionario.id, {
       include: [{ model: Funcao, as: 'funcao', attributes: ['id', 'nome'] }],
     });
@@ -123,7 +132,7 @@ async function atualizar(req, res, next) {
       });
     }
 
-    const { nome, email, telefone, funcaoId } = req.body;
+    const { nome, email, telefone, telefoneResidencial, funcaoId } = req.body;
 
     if (funcaoId) {
       const funcaoExiste = await Funcao.findByPk(funcaoId);
@@ -132,10 +141,16 @@ async function atualizar(req, res, next) {
       }
     }
 
+    let emailUpdate = funcionario.email;
+    if (email !== undefined) {
+      emailUpdate = email ? email.trim() : null;
+    }
+
     await funcionario.update({
       nome:     nome     || funcionario.nome,
-      email:    email    || funcionario.email,
+      email:    emailUpdate,
       telefone: telefone !== undefined ? telefone : funcionario.telefone,
+      telefoneResidencial: telefoneResidencial !== undefined ? telefoneResidencial : funcionario.telefoneResidencial,
       funcaoId: funcaoId || funcionario.funcaoId,
       atualizadoEm: new Date(),
     });

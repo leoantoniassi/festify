@@ -18,7 +18,7 @@ const Funcionario = sequelize.define('Funcionario', {
   },
   email: {
     type: DataTypes.STRING(150),
-    allowNull: false,
+    allowNull: true,
     unique: true,
     field: 'fun_email',
   },
@@ -26,6 +26,11 @@ const Funcionario = sequelize.define('Funcionario', {
     type: DataTypes.STRING(20),
     allowNull: true,
     field: 'fun_telefone',
+  },
+  telefoneResidencial: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+    field: 'fun_telefone_residencial',
   },
   // FK para funcoes
   funcaoId: {

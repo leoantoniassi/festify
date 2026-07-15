@@ -125,8 +125,11 @@ async function criar(req, res, next) {
       return respostaErro(res, 400, "Cliente, nome, data do evento e horário de término são obrigatórios.");
     }
 
-    if (qtdPessoas === undefined || qtdPessoas === null || qtdPessoas < 0) {
-      return respostaErro(res, 400, "O campo Total de Pessoas é obrigatório e deve ser um número não negativo.");
+    const somaConvidados = (qtdAdultos || 0) + (qtdCriancas || 0) + (qtdBebes || 0);
+    const finalQtdPessoas = somaConvidados > 0 ? somaConvidados : (qtdPessoas || 0);
+
+    if (finalQtdPessoas < 0) {
+      return respostaErro(res, 400, "O campo Total de Pessoas deve ser um número não negativo.");
     }
 
     const cliente = await Cliente.findByPk(clienteId);
@@ -152,7 +155,7 @@ async function criar(req, res, next) {
       dataValidade: (dataValidade && dataValidade !== '') ? dataValidade : null,
       dataEvento,
       horarioTermino,
-      qtdPessoas,
+      qtdPessoas: finalQtdPessoas,
       qtdAdultos: qtdAdultos || 0,
       qtdCriancas: qtdCriancas || 0,
       qtdBebes: qtdBebes || 0,
@@ -230,20 +233,21 @@ async function atualizar(req, res, next) {
     const erroData = validarDatas(dataEventoFinal, horarioTerminoFinal);
     if (erroData) return respostaErro(res, 400, erroData);
 
+    const novaQtdAdultos = qtdAdultos !== undefined ? qtdAdultos : orcamento.qtdAdultos;
+    const novaQtdCriancas = qtdCriancas !== undefined ? qtdCriancas : orcamento.qtdCriancas;
+    const novaQtdBebes = qtdBebes !== undefined ? qtdBebes : orcamento.qtdBebes;
+    const somaConvidados = (novaQtdAdultos || 0) + (novaQtdCriancas || 0) + (novaQtdBebes || 0);
+    const finalQtdPessoas = somaConvidados > 0 ? somaConvidados : (qtdPessoas !== undefined ? qtdPessoas : orcamento.qtdPessoas);
+
     const updates = pickDefined(
-      { clienteId, localId, nome, valorTotal, dataValidade: (dataValidade && dataValidade !== '') ? dataValidade : null, dataEvento, horarioTermino, qtdPessoas, qtdAdultos, qtdCriancas, qtdBebes, observacoes },
+      { clienteId, localId, nome, valorTotal, dataValidade: (dataValidade && dataValidade !== '') ? dataValidade : null, dataEvento, horarioTermino, qtdPessoas: finalQtdPessoas, qtdAdultos: novaQtdAdultos, qtdCriancas: novaQtdCriancas, qtdBebes: novaQtdBebes, observacoes },
       ['clienteId', 'localId', 'nome', 'valorTotal', 'dataValidade', 'dataEvento', 'horarioTermino', 'qtdPessoas', 'qtdAdultos', 'qtdCriancas', 'qtdBebes', 'observacoes']
     );
     updates.atualizadoEm = new Date();
 
     await orcamento.update(updates);
 
-    const novaQtdPessoas = qtdPessoas !== undefined ? qtdPessoas : orcamento.qtdPessoas;
-    const novaQtdAdultos = qtdAdultos !== undefined ? qtdAdultos : orcamento.qtdAdultos;
-    const novaQtdCriancas = qtdCriancas !== undefined ? qtdCriancas : orcamento.qtdCriancas;
-    const novaQtdBebes = qtdBebes !== undefined ? qtdBebes : orcamento.qtdBebes;
-    
-    let warning = gerarWarningPessoas(novaQtdPessoas, novaQtdAdultos, novaQtdCriancas, novaQtdBebes, "no orçamento") || undefined;
+    let warning = gerarWarningPessoas(finalQtdPessoas, novaQtdAdultos, novaQtdCriancas, novaQtdBebes, "no orçamento") || undefined;
 
     return res.json({
       success: true,

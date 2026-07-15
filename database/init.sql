@@ -130,14 +130,15 @@ COMMENT ON COLUMN categorias_produto.cap_nome IS 'Nome da categoria. Ex: Aliment
 -- 1. CLIENTES
 -- ============================================================
 CREATE TABLE clientes (
-    cli_id            UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),
-    cli_nome          VARCHAR(150) NOT NULL,
-    cli_email         VARCHAR(150) NOT NULL,
-    cli_rgcpf         VARCHAR(20)  NOT NULL,
-    cli_telefone      VARCHAR(20)  NOT NULL,
-    cli_criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    cli_atualizado_em TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    cli_deletado_em   TIMESTAMP,
+    cli_id                   UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),
+    cli_nome                 VARCHAR(150) NOT NULL,
+    cli_email                VARCHAR(150),
+    cli_rgcpf                VARCHAR(20)  NOT NULL,
+    cli_telefone             VARCHAR(20)  NOT NULL,
+    cli_telefone_residencial VARCHAR(20),
+    cli_criado_em            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cli_atualizado_em        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cli_deletado_em          TIMESTAMP,
 
     CONSTRAINT uq_clientes_rgcpf UNIQUE (cli_rgcpf),
     CONSTRAINT uq_clientes_email UNIQUE (cli_email)
@@ -174,14 +175,15 @@ COMMENT ON COLUMN fornecedores.for_caf_id IS 'FK para a tabela de categorias de 
 -- Referencia funcoes via FK
 -- ============================================================
 CREATE TABLE funcionarios (
-    fun_id            UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),
-    fun_nome          VARCHAR(150) NOT NULL,
-    fun_email         VARCHAR(150) NOT NULL,
-    fun_telefone      VARCHAR(20),
-    fun_fnc_id        UUID         NOT NULL,
-    fun_criado_em     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fun_atualizado_em TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fun_deletado_em   TIMESTAMP,
+    fun_id                   UUID         PRIMARY KEY DEFAULT uuid_generate_v4(),
+    fun_nome                 VARCHAR(150) NOT NULL,
+    fun_email                VARCHAR(150),
+    fun_telefone             VARCHAR(20),
+    fun_telefone_residencial VARCHAR(20),
+    fun_fnc_id               UUID         NOT NULL,
+    fun_criado_em            TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fun_atualizado_em        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fun_deletado_em          TIMESTAMP,
 
     CONSTRAINT uq_funcionarios_email UNIQUE (fun_email),
 
