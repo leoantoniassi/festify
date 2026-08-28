@@ -4,7 +4,7 @@ services:
   # ============================
   db:
     image: postgres:15-alpine
-    container_name: mais_alegria_db
+    container_name: festify_db
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -28,11 +28,11 @@ services:
   # ============================
   backend:
     build: ./backend
-    container_name: mais_alegria_api
+    container_name: festify_api
     restart: unless-stopped
     environment:
       PORT: 3001
-      JWT_SECRET: mais_alegria_jwt_secret_2026
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env}
       JWT_EXPIRES_IN: 24h
       DB_HOST: db
       DB_PORT: 5432
@@ -52,7 +52,6 @@ services:
       - backend_uploads:/app/uploads
       - ./database:/database:ro
       - ./docs:/app/docs
-      - C:\Users:/Users
     depends_on:
       db:
         condition: service_healthy
@@ -62,7 +61,7 @@ services:
   # ============================
   frontend:
     build: ./frontend
-    container_name: mais_alegria_web
+    container_name: festify_web
     restart: unless-stopped
     ports:
       - "8080:80"

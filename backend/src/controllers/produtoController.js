@@ -50,7 +50,8 @@ async function listar(req, res, next) {
 // GET /api/produtos/:id
 async function buscarPorId(req, res, next) {
   try {
-    const produto = await Produto.findByPk(req.params.id, {
+    const produto = await Produto.findOne({
+      where: { id: req.params.id },
       include: [{ model: CategoriaProduto, as: 'categoria', attributes: ['id', 'nome'] }],
     });
     if (!produto) {
@@ -78,7 +79,7 @@ async function criar(req, res, next) {
       });
     }
 
-    const categoriaExiste = await CategoriaProduto.findByPk(categoriaId);
+    const categoriaExiste = await CategoriaProduto.findOne({ where: { id: categoriaId } });
     if (!categoriaExiste) {
       return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     }
@@ -92,7 +93,8 @@ async function criar(req, res, next) {
       custoUnitario:  Number(custoUnitario)  || 0,
     });
 
-    const produtoCompleto = await Produto.findByPk(produto.id, {
+    const produtoCompleto = await Produto.findOne({
+      where: { id: produto.id },
       include: [{ model: CategoriaProduto, as: 'categoria', attributes: ['id', 'nome'] }],
     });
 
@@ -109,7 +111,7 @@ async function criar(req, res, next) {
 // PUT /api/produtos/:id
 async function atualizar(req, res, next) {
   try {
-    const produto = await Produto.findByPk(req.params.id);
+    const produto = await Produto.findOne({ where: { id: req.params.id } });
     if (!produto) {
       return res.status(404).json({
         success: false,
@@ -120,7 +122,7 @@ async function atualizar(req, res, next) {
     const { nome, categoriaId, quantidade, estoqueMinimo, unidadeMedida, custoUnitario } = req.body;
 
     if (categoriaId) {
-      const categoriaExiste = await CategoriaProduto.findByPk(categoriaId);
+      const categoriaExiste = await CategoriaProduto.findOne({ where: { id: categoriaId } });
       if (!categoriaExiste) {
         return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
       }
@@ -149,7 +151,7 @@ async function atualizar(req, res, next) {
 // DELETE /api/produtos/:id (soft delete)
 async function remover(req, res, next) {
   try {
-    const produto = await Produto.findByPk(req.params.id);
+    const produto = await Produto.findOne({ where: { id: req.params.id } });
     if (!produto) {
       return res.status(404).json({
         success: false,

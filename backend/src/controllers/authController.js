@@ -5,63 +5,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
-const { Usuario } = require('../models');
+const { Usuario, Empresa } = require('../models');
+const { resolverTenant } = require('../utils/resolverTenant');
 const { enviarEmailRecuperacaoSenha } = require('../services/emailService');
-
-// POST /api/auth/register
-async function register(req, res, next) {
-  try {
-    const { nome, email, senha, role } = req.body;
-
-    if (!nome || !email || !senha) {
-      return res.status(400).json({
-        success: false,
-        message: 'Nome, email e senha são obrigatórios.',
-      });
-    }
-
-    // Verifica se email já existe
-    const existente = await Usuario.findOne({ where: { email } });
-    if (existente) {
-      return res.status(409).json({
-        success: false,
-        message: 'Este email já está cadastrado.',
-      });
-    }
-
-    // Hash da senha
-    const salt = await bcrypt.genSalt(10);
-    const senhaHash = await bcrypt.hash(senha, salt);
-
-    const usuario = await Usuario.create({
-      nome,
-      email,
-      senha: senhaHash,
-      role: role || 'operador',
-    });
-
-    // Gera token
-    const token = jwt.sign(
-      { id: usuario.id, email: usuario.email, role: usuario.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
-    );
-
-    return res.status(201).json({
-      success: true,
-      message: 'Usuário criado com sucesso!',
-      data: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-        role: usuario.role,
-      },
-      token,
-    });
-  } catch (error) {
-    return next(error);
-  }
-}
 
 // POST /api/auth/login
 async function login(req, res, next) {
@@ -75,12 +21,32 @@ async function login(req, res, next) {
       });
     }
 
-    // Busca usuário pelo email
-    const usuario = await Usuario.findOne({ where: { email } });
-    if (!usuario) {
+    // O mesmo e-mail pode existir em buffets diferentes, então a empresa
+    // precisa ser resolvida antes de procurar o usuário.
+    const { empresa, erro } = await resolverTenant(req);
+    if (erro && !empresa) {
+      return res.status(400).json({ success: false, message: erro });
+    }
+
+    // super_admin (dono da plataforma) não pertence a empresa nenhuma.
+    const usuario = await Usuario.findOne({
+      where: {
+        email,
+        [Op.or]: [{ empresaId: empresa.id }, { role: 'super_admin' }],
+      },
+      ignoraTenant: true,
+    });
+    if (!usuario || !usuario.senha) {
       return res.status(401).json({
         success: false,
         message: 'Credenciais inválidas.',
+      });
+    }
+
+    if (usuario.role !== 'super_admin' && empresa.status !== 'ativo') {
+      return res.status(403).json({
+        success: false,
+        message: 'Esta empresa está com o acesso suspenso. Fale com o suporte.',
       });
     }
 
@@ -96,7 +62,12 @@ async function login(req, res, next) {
 
     // Gera token
     const token = jwt.sign(
-      { id: usuario.id, email: usuario.email, role: usuario.role },
+      {
+        id: usuario.id,
+        email: usuario.email,
+        role: usuario.role,
+        empresaId: usuario.empresaId,
+      },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
     );
@@ -109,6 +80,10 @@ async function login(req, res, next) {
         nome: usuario.nome,
         email: usuario.email,
         role: usuario.role,
+        empresaId: usuario.empresaId,
+        empresa: usuario.empresaId
+          ? { id: empresa.id, nomeFantasia: empresa.nomeFantasia, slug: empresa.slug }
+          : null,
       },
       token,
     });
@@ -137,10 +112,21 @@ async function solicitarRecuperacaoSenha(req, res, next) {
       });
     }
 
-    const usuario = await Usuario.findOne({ where: { email } });
-
     // [OWASP A07] Anti-enumeração de contas: sempre retorna resposta genérica de sucesso
     const mensagemSucesso = 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.';
+
+    // O e-mail só é único dentro de uma empresa, então o tenant precisa ser
+    // resolvido antes da busca. Empresa não identificada devolve a mesma
+    // mensagem genérica, para não virar um oráculo de quais buffets existem.
+    const { empresa } = await resolverTenant(req);
+    if (!empresa) {
+      return res.json({ success: true, message: mensagemSucesso });
+    }
+
+    const usuario = await Usuario.findOne({
+      where: { email, empresaId: empresa.id },
+      ignoraTenant: true,
+    });
 
     if (!usuario) {
       return res.json({
@@ -163,6 +149,7 @@ async function solicitarRecuperacaoSenha(req, res, next) {
       nome: usuario.nome,
       email: usuario.email,
       token,
+      empresaId: empresa.id,
     });
 
     return res.json({
@@ -204,6 +191,9 @@ async function redefinirSenha(req, res, next) {
 
     // Busca usuário pelo token e expiração
     const usuario = await Usuario.findOne({
+      // Rota pública: o token de reset é único globalmente e já identifica
+      // o usuário — e, por consequência, a empresa dele.
+      ignoraTenant: true,
       where: {
         resetToken: token,
         resetExpiracao: { [Op.gt]: new Date() },
@@ -237,4 +227,4 @@ async function redefinirSenha(req, res, next) {
   }
 }
 
-module.exports = { register, login, solicitarRecuperacaoSenha, redefinirSenha };
+module.exports = { login, solicitarRecuperacaoSenha, redefinirSenha };

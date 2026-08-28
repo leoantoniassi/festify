@@ -356,7 +356,7 @@ export default function EventosPage() {
 
       <div className="grid grid-cols-12 gap-6 mb-8">
         {/* Table */}
-        <div className="col-span-12 lg:col-span-8 bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/30">
+        <div className="col-span-12 lg:col-span-8 bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant/30">
 
           {/* Header e Filtros */}
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
@@ -558,7 +558,7 @@ export default function EventosPage() {
                       </div>
                     )}
                     {selectedEvento.local?.capacidadeMaxima && (selectedEvento.qtdPessoas || 0) > selectedEvento.local.capacidadeMaxima && (
-                      <div className="flex items-start gap-2.5 text-xs bg-red-950/40 border border-red-500/30 text-white p-3.5 rounded-2xl mt-4 shadow-sm">
+                      <div className="flex items-start gap-2.5 text-xs bg-error-container border border-error/30 text-on-error-container p-3.5 rounded-2xl mt-4 shadow-sm">
                         <span className="material-symbols-outlined text-base text-red-400 mt-0.5 shrink-0">warning</span>
                         <div>
                           <p className="font-bold text-red-200">Capacidade Excedida</p>
@@ -571,14 +571,14 @@ export default function EventosPage() {
                     <p className="mt-4 text-sm opacity-80 italic">{selectedEvento.observacoes}</p>
                   )}
                 </div>
-                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
+                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-surface/5 rounded-full blur-3xl" />
               </div>
 
               {/* ─── Botões de Escala ────────────────────────────── */}
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => handleVerEscala(selectedEvento)}
-                  className="flex items-center justify-center gap-2 px-4 py-3.5 bg-white border-2 border-tertiary text-tertiary rounded-2xl font-bold text-sm hover:bg-tertiary hover:text-on-tertiary transition-all shadow-sm group"
+                  className="flex items-center justify-center gap-2 px-4 py-3.5 bg-surface border-2 border-tertiary text-tertiary rounded-2xl font-bold text-sm hover:bg-tertiary hover:text-on-tertiary transition-all shadow-sm group"
                 >
                   <span className="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">groups</span>
                   Ver Escala
@@ -608,7 +608,7 @@ export default function EventosPage() {
           onClick={() => setShowEscalaModal(false)}
         >
           <div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
+            className="bg-surface rounded-3xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -706,7 +706,7 @@ export default function EventosPage() {
           onClick={() => setShowCriarEscalaModal(false)}
         >
           <div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden"
+            className="bg-surface rounded-3xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -785,7 +785,7 @@ export default function EventosPage() {
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => toggleSelecionado(func.id)}
-                          className="w-4 h-4 rounded accent-[#6600A1] shrink-0"
+                          className="w-4 h-4 rounded accent-tertiary shrink-0"
                         />
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${isChecked ? 'bg-tertiary text-on-tertiary' : 'bg-outline/10 text-on-surface-variant'}`}>
@@ -854,7 +854,7 @@ export default function EventosPage() {
       {/* Panel */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between">
               <div><h3 className="text-2xl font-headline font-extrabold">{editing ? "Editar Evento" : "Novo Evento"}</h3></div>
               <button onClick={() => setShowPanel(false)} className="p-2 hover:bg-surface-container rounded-full"><span className="material-symbols-outlined">close</span></button>

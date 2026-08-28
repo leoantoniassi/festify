@@ -11,6 +11,12 @@ const Fornecedor = sequelize.define('Fornecedor', {
     primaryKey: true,
     field: 'for_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'for_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(150),
     allowNull: false,

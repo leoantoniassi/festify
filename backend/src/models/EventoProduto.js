@@ -11,6 +11,12 @@ const EventoProduto = sequelize.define('EventoProduto', {
     primaryKey: true,
     field: 'evp_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'evp_emp_id',
+  },
   eventoId: {
     type: DataTypes.UUID,
     allowNull: false,

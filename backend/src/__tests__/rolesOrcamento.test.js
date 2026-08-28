@@ -31,11 +31,11 @@ jest.mock('../middleware/roles', () => (...allowedRoles) => (req, res, next) => 
 jest.mock('../models', () => ({
   Orcamento: {
     create: jest.fn(),
-    findByPk: jest.fn(),
+    findOne: jest.fn(),
     scope: jest.fn(() => ({ findAndCountAll: jest.fn() })),
   },
-  Cliente: { findByPk: jest.fn() },
-  Local: { findByPk: jest.fn() },
+  Cliente: { findOne: jest.fn() },
+  Local: { findOne: jest.fn() },
   Evento: { create: jest.fn() },
   OrcamentoProduto: { bulkCreate: jest.fn() },
 }));
@@ -97,7 +97,7 @@ describe('Roles — Orçamentos (operador)', () => {
   // ==========================================================
   describe('POST /api/orcamentos (operador)', () => {
     test('deve permitir que operador crie orçamento → 201', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Orcamento.create.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
@@ -114,7 +114,7 @@ describe('Roles — Orçamentos (operador)', () => {
   // ==========================================================
   describe('PUT /api/orcamentos/:id (operador)', () => {
     test('deve permitir que operador edite orçamento → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .put('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000')
@@ -130,7 +130,7 @@ describe('Roles — Orçamentos (operador)', () => {
   // ==========================================================
   describe('POST /api/orcamentos/:id/confirmar (operador)', () => {
     test('deve permitir que operador confirme orçamento → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
       Evento.create.mockResolvedValue({ id: 'evt-1', orcamentoId: 'orc-1' });
 
       const res = await request(app)
@@ -147,7 +147,7 @@ describe('Roles — Orçamentos (operador)', () => {
   // ==========================================================
   describe('POST /api/orcamentos/:id/rejeitar (operador)', () => {
     test('deve permitir que operador rejeite orçamento → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/rejeitar');
@@ -171,7 +171,7 @@ describe('Roles — Orçamentos (operador)', () => {
 
     test('deve permitir exclusão para gerente → 200', async () => {
       mockUser = { id: 'user-1', role: 'gerente' };
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .delete('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000');
@@ -186,7 +186,7 @@ describe('Roles — Orçamentos (operador)', () => {
   // ==========================================================
   describe('POST /api/orcamentos/:id/rejeitar — validação de fluxo', () => {
     test('deve retornar 400 se orçamento já estiver aprovado', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento({ status: 'aprovado' }));
+      Orcamento.findOne.mockResolvedValue(makeOrcamento({ status: 'aprovado' }));
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/rejeitar');
@@ -196,7 +196,7 @@ describe('Roles — Orçamentos (operador)', () => {
     });
 
     test('deve permitir rejeitar orçamento pendente → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento({ status: 'pendente' }));
+      Orcamento.findOne.mockResolvedValue(makeOrcamento({ status: 'pendente' }));
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/rejeitar');
@@ -206,7 +206,7 @@ describe('Roles — Orçamentos (operador)', () => {
     });
 
     test('deve permitir rejeitar orçamento reprovado → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento({ status: 'reprovado' }));
+      Orcamento.findOne.mockResolvedValue(makeOrcamento({ status: 'reprovado' }));
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/rejeitar');
@@ -273,7 +273,7 @@ describe('Roles — Orçamentos (operador)', () => {
     });
 
     test('POST /api/orcamentos → 201', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Orcamento.create.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
@@ -284,7 +284,7 @@ describe('Roles — Orçamentos (operador)', () => {
     });
 
     test('PUT /api/orcamentos/:id → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .put('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000')
@@ -294,7 +294,7 @@ describe('Roles — Orçamentos (operador)', () => {
     });
 
     test('DELETE /api/orcamentos/:id → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .delete('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000');

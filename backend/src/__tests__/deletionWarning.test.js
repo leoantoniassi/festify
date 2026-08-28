@@ -31,9 +31,9 @@ jest.mock('../middleware/roles', () => (...allowedRoles) => (req, res, next) => 
 
 // ── Models Mocks ────────────────────────────────────────────────
 jest.mock('../models', () => ({
-  Evento: { findByPk: jest.fn(), count: jest.fn() },
-  Cliente: { findByPk: jest.fn() },
-  Funcionario: { findByPk: jest.fn() },
+  Evento: { findOne: jest.fn(), count: jest.fn() },
+  Cliente: { findOne: jest.fn() },
+  Funcionario: { findOne: jest.fn() },
   Escala: { count: jest.fn() },
 }));
 
@@ -97,7 +97,7 @@ describe('Deletion Warning System', () => {
   describe('DELETE /api/eventos/:id', () => {
     test('Deletar evento passado → sucesso direto (sem warning)', async () => {
       const mockEvent = createMockEvento(VALID_UUID, PAST_DATE);
-      Evento.findByPk.mockResolvedValue(mockEvent);
+      Evento.findOne.mockResolvedValue(mockEvent);
 
       const res = await request(app)
         .delete(`/api/eventos/${VALID_UUID}`);
@@ -114,7 +114,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar evento futuro → retorna warning e NÃO deleta', async () => {
       const mockEvent = createMockEvento(VALID_UUID, FUTURE_DATE);
-      Evento.findByPk.mockResolvedValue(mockEvent);
+      Evento.findOne.mockResolvedValue(mockEvent);
 
       const res = await request(app)
         .delete(`/api/eventos/${VALID_UUID}`);
@@ -130,7 +130,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar evento futuro com ?force=true → deleta com sucesso', async () => {
       const mockEvent = createMockEvento(VALID_UUID, FUTURE_DATE);
-      Evento.findByPk.mockResolvedValue(mockEvent);
+      Evento.findOne.mockResolvedValue(mockEvent);
 
       const res = await request(app)
         .delete(`/api/eventos/${VALID_UUID}?force=true`);
@@ -144,7 +144,7 @@ describe('Deletion Warning System', () => {
     });
 
     test('Deletar evento inexistente → 404', async () => {
-      Evento.findByPk.mockResolvedValue(null);
+      Evento.findOne.mockResolvedValue(null);
 
       const res = await request(app)
         .delete(`/api/eventos/${VALID_UUID}`);
@@ -171,7 +171,7 @@ describe('Deletion Warning System', () => {
   describe('DELETE /api/clientes/:id', () => {
     test('Deletar cliente sem eventos futuros → sucesso direto', async () => {
       const mockCliente = createMockCliente(VALID_UUID);
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.count.mockResolvedValue(0);
 
       const res = await request(app)
@@ -187,7 +187,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar cliente com eventos futuros → retorna warning e NÃO deleta', async () => {
       const mockCliente = createMockCliente(VALID_UUID);
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.count.mockResolvedValue(2); // 2 eventos futuros
 
       const res = await request(app)
@@ -204,7 +204,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar cliente com eventos futuros com ?force=true → deleta', async () => {
       const mockCliente = createMockCliente(VALID_UUID);
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       // force=true bypassa a verificação, mesmo com eventos futuros
       Evento.count.mockResolvedValue(2);
 
@@ -220,7 +220,7 @@ describe('Deletion Warning System', () => {
     });
 
     test('Deletar cliente inexistente → 404', async () => {
-      Cliente.findByPk.mockResolvedValue(null);
+      Cliente.findOne.mockResolvedValue(null);
 
       const res = await request(app)
         .delete(`/api/clientes/${VALID_UUID}`);
@@ -237,7 +237,7 @@ describe('Deletion Warning System', () => {
   describe('DELETE /api/funcionarios/:id', () => {
     test('Deletar funcionário sem alocações futuras → sucesso direto', async () => {
       const mockFunc = createMockFuncionario(VALID_UUID);
-      Funcionario.findByPk.mockResolvedValue(mockFunc);
+      Funcionario.findOne.mockResolvedValue(mockFunc);
       Escala.count.mockResolvedValue(0);
 
       const res = await request(app)
@@ -253,7 +253,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar funcionário com alocações futuras → retorna warning e NÃO deleta', async () => {
       const mockFunc = createMockFuncionario(VALID_UUID);
-      Funcionario.findByPk.mockResolvedValue(mockFunc);
+      Funcionario.findOne.mockResolvedValue(mockFunc);
       Escala.count.mockResolvedValue(3); // 3 alocações futuras
 
       const res = await request(app)
@@ -270,7 +270,7 @@ describe('Deletion Warning System', () => {
 
     test('Deletar funcionário com alocações futuras com ?force=true → deleta', async () => {
       const mockFunc = createMockFuncionario(VALID_UUID);
-      Funcionario.findByPk.mockResolvedValue(mockFunc);
+      Funcionario.findOne.mockResolvedValue(mockFunc);
       Escala.count.mockResolvedValue(3);
 
       const res = await request(app)
@@ -285,7 +285,7 @@ describe('Deletion Warning System', () => {
     });
 
     test('Deletar funcionário inexistente → 404', async () => {
-      Funcionario.findByPk.mockResolvedValue(null);
+      Funcionario.findOne.mockResolvedValue(null);
 
       const res = await request(app)
         .delete(`/api/funcionarios/${VALID_UUID}`);
@@ -331,7 +331,7 @@ describe('Deletion Warning System', () => {
 
     describe('force com valor não "true" não bypassa warning', () => {
       test('em evento (force=abc)', async () => {
-        Evento.findByPk.mockResolvedValue(
+        Evento.findOne.mockResolvedValue(
           createMockEvento(VALID_UUID, FUTURE_DATE)
         );
 
@@ -345,7 +345,7 @@ describe('Deletion Warning System', () => {
       });
 
       test('em cliente (force=abc)', async () => {
-        Cliente.findByPk.mockResolvedValue(createMockCliente(VALID_UUID));
+        Cliente.findOne.mockResolvedValue(createMockCliente(VALID_UUID));
         Evento.count.mockResolvedValue(1);
 
         const res = await request(app)
@@ -357,7 +357,7 @@ describe('Deletion Warning System', () => {
       });
 
       test('em funcionário (force=abc)', async () => {
-        Funcionario.findByPk.mockResolvedValue(createMockFuncionario(VALID_UUID));
+        Funcionario.findOne.mockResolvedValue(createMockFuncionario(VALID_UUID));
         Escala.count.mockResolvedValue(1);
 
         const res = await request(app)

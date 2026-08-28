@@ -11,6 +11,12 @@ const CategoriaProduto = sequelize.define('CategoriaProduto', {
     primaryKey: true,
     field: 'cap_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'cap_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(80),
     allowNull: false,

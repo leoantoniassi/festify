@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import BrandLogo from '../BrandLogo';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const navItems = [
   { to: '/', icon: 'dashboard', label: 'Dashboard' },
@@ -13,9 +15,11 @@ const navItems = [
   { to: '/catalogos', icon: 'menu_book', label: 'Catálogos' },
   { to: '/cadastros', icon: 'tune', label: 'Cadastros' },
   { to: '/usuarios', icon: 'admin_panel_settings', label: 'Usuários' },
+  { to: '/configuracoes', icon: 'palette', label: 'Identidade Visual' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
+  const nomeFantasia = useTheme()?.config?.nomeFantasia || 'Festify';
   const { user } = useAuth();
 
   return (
@@ -31,25 +35,23 @@ export default function Sidebar({ isOpen, onClose }) {
 
       {/* Sidebar com transição responsiva */}
       <aside
-        className={`fixed left-0 top-0 h-screen z-40 w-64 border-r border-outline-variant/30 bg-white flex flex-col justify-between transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed left-0 top-0 h-screen z-40 w-64 border-r border-outline-variant/30 bg-surface flex flex-col justify-between transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
           } md:translate-x-0`}
       >
         {/* Bloco Superior: Logo */}
         <div className="p-6 pb-2">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm">
-              <span className="material-symbols-outlined filled">celebration</span>
-            </div>
+            <BrandLogo tamanho="md" className="shadow-sm" />
             <div>
-              <h1 className="text-xl font-extrabold text-on-surface leading-none font-headline">Mais Alegria</h1>
-              <p className="text-[10px] uppercase tracking-widest text-on-surface-variant/70 mt-1">Festive Architect</p>
+              <h1 className="text-xl font-extrabold text-on-surface leading-none font-headline">{nomeFantasia}</h1>
+              <p className="text-[10px] uppercase tracking-widest text-on-surface-variant/70 mt-1">Festify</p>
             </div>
           </div>
         </div>
 
         {/* Bloco Central: Nav Items com Rolagem se faltar tela */}
         <nav className="flex-1 overflow-y-auto px-6 py-2 space-y-1 custom-scrollbar">
-          {navItems.filter(item => (item.to !== '/usuarios' && item.to !== '/cadastros') || user?.role === 'gerente').map(({ to, icon, label }) => (
+          {navItems.filter(item => !['/usuarios', '/cadastros', '/configuracoes'].includes(item.to) || user?.role === 'gerente').map(({ to, icon, label }) => (
             <NavLink
               key={to}
               to={to}
@@ -73,7 +75,7 @@ export default function Sidebar({ isOpen, onClose }) {
         </nav>
 
         {/* Bloco Inferior: User Profile */}
-        <div className="p-6 border-t border-outline-variant/30 bg-white">
+        <div className="p-6 border-t border-outline-variant/30 bg-surface">
           <div className="flex items-center gap-3 p-2.5 bg-surface-container rounded-full">
             <div className="w-10 h-10 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-bold text-xs shrink-0">
               {(user?.nome || 'Admin').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}

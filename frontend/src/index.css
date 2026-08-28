@@ -24,6 +24,21 @@
   --color-on-surface-variant: #4a4639;
   --color-outline: #7b7768;
   --color-outline-variant: #cbc7b6;
+  /* Cores de estado. Não acompanham a marca do buffet: o significado
+     ("aprovado", "cancelado") vale mais que a identidade visual, e o
+     usuário aprende a associá-las. Todos os pares passam em WCAG AA. */
+  --color-success: #2e7d32;
+  --color-on-success: #ffffff;
+  --color-success-container: #d7f0d5;
+  --color-on-success-container: #0b2e0d;
+  --color-warning: #c94400;
+  --color-on-warning: #ffffff;
+  --color-warning-container: #ffe0b2;
+  --color-on-warning-container: #3b1a00;
+  --color-info: #1565c0;
+  --color-on-info: #ffffff;
+  --color-info-container: #d6e6ff;
+  --color-on-info-container: #001a3d;
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
@@ -60,13 +75,19 @@ h1, h2, h3, .font-headline {
   box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.04);
 }
 
+/* Acompanha a cor do tenant: o tom final é a primária levemente
+   escurecida, em vez de um hex fixo. */
 .brand-gradient {
-  background: linear-gradient(135deg, #FEDC57 0%, #e5c545 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    color-mix(in oklab, var(--color-primary) 88%, black) 100%
+  );
 }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbc7b6; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--color-outline-variant); border-radius: 10px; }
 
 /* Animations */
 @keyframes slideInRight {
@@ -94,4 +115,19 @@ h1, h2, h3, .font-headline {
 
 .slide-in-down {
   animation: slideInDown 0.3s ease-out;
+}
+
+/* Usada em Sidebar.jsx; nunca chegou a ser definida. */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 10px;
+}
+
+/* Barra de progresso das telas de definir/redefinir senha. A animação era
+   referenciada em DefinirSenhaPage.jsx e RedefinirSenhaPage.jsx, mas o
+   @keyframes não existia — a barra ficava parada. */
+@keyframes progress-bar {
+  from { width: 100%; }
+  to   { width: 0%; }
 }

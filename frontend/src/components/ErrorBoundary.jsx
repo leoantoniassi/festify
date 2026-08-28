@@ -17,17 +17,17 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '40px', fontFamily: 'monospace', background: '#ffeaea', minHeight: '100vh' }}>
-          <h1 style={{ color: '#c00', fontSize: '24px' }}>⚠️ Algo deu errado</h1>
-          <p style={{ marginTop: '16px', color: '#333' }}>
+        <div className="min-h-screen p-10 font-mono bg-error-container text-on-error-container">
+          <h1 className="text-2xl text-error">⚠️ Algo deu errado</h1>
+          <p className="mt-4">
             <strong>Erro:</strong> {this.state.error?.message || 'Erro desconhecido'}
           </p>
-          <pre style={{ marginTop: '16px', padding: '16px', background: '#fff', borderRadius: '8px', overflow: 'auto', fontSize: '12px', color: '#666' }}>
+          <pre className="mt-4 p-4 rounded-lg overflow-auto text-xs bg-surface text-on-surface-variant">
             {this.state.error?.stack}
           </pre>
           <button
             onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
-            style={{ marginTop: '20px', padding: '12px 24px', background: '#c00', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
+            className="mt-5 px-6 py-3 rounded-lg text-sm cursor-pointer bg-error text-on-error"
           >
             Limpar dados e voltar ao Login
           </button>

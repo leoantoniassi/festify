@@ -11,6 +11,12 @@ const OrcamentoProduto = sequelize.define('OrcamentoProduto', {
     primaryKey: true,
     field: 'orp_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'orp_emp_id',
+  },
   orcamentoId: {
     type: DataTypes.UUID,
     allowNull: false,

@@ -168,15 +168,15 @@ export default function DocumentosPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 px-2">
-        <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+        <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
           <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total de Documentos</p>
           <p className="text-3xl font-headline font-extrabold text-tertiary">{docs.length}</p>
         </div>
-        <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+        <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
           <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Contratos PDF</p>
           <p className="text-3xl font-headline font-extrabold text-primary">{docs.filter(d => d.tipoArquivo === 'pdf').length}</p>
         </div>
-        <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+        <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
           <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Com Link Externo</p>
           <p className="text-3xl font-headline font-extrabold text-secondary">{docs.filter(d => d.caminhoUrl?.startsWith('http')).length}</p>
         </div>
@@ -194,11 +194,11 @@ export default function DocumentosPage() {
           const fi = fileIcon(doc.tipoArquivo);
           const isUrl = doc.caminhoUrl?.startsWith('http');
           return (
-            <div key={doc.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-outline-variant/10">
+            <div key={doc.id} className="group bg-surface rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-outline-variant/10">
               <div className={`${fi.bg} p-6 flex items-center justify-center aspect-[3/2] relative`}>
                 <span className={`material-symbols-outlined text-6xl ${fi.color}`}>{fi.icon}</span>
                 <div className="absolute top-3 right-3">
-                  <span className="text-[10px] font-bold uppercase bg-white/80 backdrop-blur px-2 py-1 rounded-full text-on-surface-variant border border-outline-variant/20">
+                  <span className="text-[10px] font-bold uppercase bg-surface/80 backdrop-blur px-2 py-1 rounded-full text-on-surface-variant border border-outline-variant/20">
                     {doc.tipoArquivo?.toUpperCase() || 'DOC'}
                   </span>
                 </div>
@@ -264,7 +264,7 @@ export default function DocumentosPage() {
           onClick={() => setShowPanel(false)}
         >
           <div
-            className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl"
+            className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
@@ -293,7 +293,7 @@ export default function DocumentosPage() {
                   </label>
                   <input
                     id="nomeArquivo"
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all"
                     placeholder="Ex: Contrato João Carlos — Festa Jun/2026"
                     value={form.nomeArquivo}
                     onChange={(e) => setForm({ ...form, nomeArquivo: e.target.value })}
@@ -307,7 +307,7 @@ export default function DocumentosPage() {
                   </label>
                   <input
                     id="caminhoUrl"
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all"
                     type="text"
                     placeholder="C:\Contratos\joao.pdf  ou  https://drive.google.com/..."
                     value={form.caminhoUrl}
@@ -325,7 +325,7 @@ export default function DocumentosPage() {
                   </label>
                   <select
                     id="clienteId"
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all appearance-none"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all appearance-none"
                     value={form.clienteId}
                     onChange={(e) => handleClienteChange(e.target.value)}
                   >
@@ -342,7 +342,7 @@ export default function DocumentosPage() {
                   </label>
                   <select
                     id="eventoId"
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all appearance-none"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all appearance-none"
                     value={form.eventoId}
                     onChange={(e) => handleEventoChange(e.target.value)}
                   >
@@ -359,7 +359,7 @@ export default function DocumentosPage() {
             <div className="p-8 bg-surface-container-low flex gap-4 rounded-tl-3xl">
               <button
                 onClick={() => setShowPanel(false)}
-                className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-white transition-all"
+                className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-surface transition-all"
               >
                 Cancelar
               </button>

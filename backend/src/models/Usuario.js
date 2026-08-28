@@ -11,6 +11,12 @@ const Usuario = sequelize.define('Usuario', {
     primaryKey: true,
     field: 'usr_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    field: 'usr_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(150),
     allowNull: false,

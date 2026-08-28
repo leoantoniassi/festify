@@ -4,6 +4,7 @@
 const { Op } = require('sequelize');
 const { Fornecedor, CategoriaFornecedor } = require('../models');
 const { gerarLinkWhatsApp } = require('../utils/whatsapp');
+const { saudacaoWhatsapp } = require('../utils/brand');
 
 // GET /api/fornecedores
 async function listar(req, res, next) {
@@ -49,7 +50,8 @@ async function listar(req, res, next) {
 // GET /api/fornecedores/:id
 async function buscarPorId(req, res, next) {
   try {
-    const fornecedor = await Fornecedor.findByPk(req.params.id, {
+    const fornecedor = await Fornecedor.findOne({
+      where: { id: req.params.id },
       include: [{ model: CategoriaFornecedor, as: 'categoria', attributes: ['id', 'nome'] }],
     });
 
@@ -78,13 +80,14 @@ async function criar(req, res, next) {
       });
     }
 
-    const categoriaExiste = await CategoriaFornecedor.findByPk(categoriaId);
+    const categoriaExiste = await CategoriaFornecedor.findOne({ where: { id: categoriaId } });
     if (!categoriaExiste) {
       return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     }
 
     const fornecedor = await Fornecedor.create({ nome, email, cnpj, telefone, categoriaId });
-    const fornecedorCompleto = await Fornecedor.findByPk(fornecedor.id, {
+    const fornecedorCompleto = await Fornecedor.findOne({
+      where: { id: fornecedor.id },
       include: [{ model: CategoriaFornecedor, as: 'categoria', attributes: ['id', 'nome'] }],
     });
 
@@ -101,7 +104,7 @@ async function criar(req, res, next) {
 // PUT /api/fornecedores/:id
 async function atualizar(req, res, next) {
   try {
-    const fornecedor = await Fornecedor.findByPk(req.params.id);
+    const fornecedor = await Fornecedor.findOne({ where: { id: req.params.id } });
     if (!fornecedor) {
       return res.status(404).json({
         success: false,
@@ -112,7 +115,7 @@ async function atualizar(req, res, next) {
     const { nome, email, cnpj, telefone, categoriaId } = req.body;
 
     if (categoriaId) {
-      const categoriaExiste = await CategoriaFornecedor.findByPk(categoriaId);
+      const categoriaExiste = await CategoriaFornecedor.findOne({ where: { id: categoriaId } });
       if (!categoriaExiste) {
         return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
       }
@@ -140,7 +143,7 @@ async function atualizar(req, res, next) {
 // DELETE /api/fornecedores/:id (soft delete)
 async function remover(req, res, next) {
   try {
-    const fornecedor = await Fornecedor.findByPk(req.params.id);
+    const fornecedor = await Fornecedor.findOne({ where: { id: req.params.id } });
     if (!fornecedor) {
       return res.status(404).json({
         success: false,
@@ -162,7 +165,7 @@ async function remover(req, res, next) {
 // GET /api/fornecedores/:id/whatsapp
 async function whatsapp(req, res, next) {
   try {
-    const fornecedor = await Fornecedor.findByPk(req.params.id);
+    const fornecedor = await Fornecedor.findOne({ where: { id: req.params.id } });
     if (!fornecedor) {
       return res.status(404).json({
         success: false,
@@ -172,7 +175,7 @@ async function whatsapp(req, res, next) {
 
     const link = gerarLinkWhatsApp(
       fornecedor.telefone,
-      `Ola ${fornecedor.nome}, aqui e a equipe Mais Alegria.`
+      await saudacaoWhatsapp(fornecedor.nome)
     );
 
     return res.json({

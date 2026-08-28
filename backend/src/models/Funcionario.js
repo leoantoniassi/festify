@@ -11,6 +11,12 @@ const Funcionario = sequelize.define('Funcionario', {
     primaryKey: true,
     field: 'fun_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'fun_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(150),
     allowNull: false,

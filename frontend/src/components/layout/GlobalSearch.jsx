@@ -11,11 +11,11 @@ const TIPO_CONFIG = {
 };
 
 const STATUS_LABEL = {
-  pendente:   { label: 'Pendente',   cls: 'bg-amber-100 text-amber-700' },
-  aprovado:   { label: 'Aprovado',   cls: 'bg-green-100 text-green-700' },
-  reprovado:  { label: 'Reprovado',  cls: 'bg-red-100 text-red-700' },
-  concluido:  { label: 'Concluído',  cls: 'bg-blue-100 text-blue-700' },
-  cancelado:  { label: 'Cancelado',  cls: 'bg-gray-100 text-gray-500' },
+  pendente:   { label: 'Pendente',   cls: 'bg-warning-container text-on-warning-container' },
+  aprovado:   { label: 'Aprovado',   cls: 'bg-success-container text-on-success-container' },
+  reprovado:  { label: 'Reprovado',  cls: 'bg-error-container text-on-error-container' },
+  concluido:  { label: 'Concluído',  cls: 'bg-info-container text-on-info-container' },
+  cancelado:  { label: 'Cancelado',  cls: 'bg-surface-container-high text-on-surface-variant' },
 };
 
 export default function GlobalSearch() {
@@ -124,7 +124,7 @@ export default function GlobalSearch() {
       {/* Input */}
       <div
         className={`flex items-center bg-surface-container-low px-4 py-2 rounded-full w-64 lg:w-96 transition-all duration-200 ${
-          open ? 'ring-2 ring-primary bg-white shadow-lg shadow-primary/10' : 'group focus-within:ring-2 focus-within:ring-primary'
+          open ? 'ring-2 ring-primary bg-surface shadow-lg shadow-primary/10' : 'group focus-within:ring-2 focus-within:ring-primary'
         }`}
       >
         {loading ? (
@@ -162,7 +162,7 @@ export default function GlobalSearch() {
 
       {/* Dropdown */}
       {open && (temResultados || (query.trim().length >= 2 && !loading)) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-outline-variant/20 overflow-hidden z-50 max-h-[70vh] overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-surface rounded-2xl shadow-2xl border border-outline-variant/20 overflow-hidden z-50 max-h-[70vh] overflow-y-auto">
 
           {/* Sem resultados */}
           {!temResultados && !loading && (

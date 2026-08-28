@@ -11,6 +11,12 @@ const Documento = sequelize.define('Documento', {
     primaryKey: true,
     field: 'doc_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'doc_emp_id',
+  },
   clienteId: {
     type: DataTypes.UUID,
     allowNull: true,

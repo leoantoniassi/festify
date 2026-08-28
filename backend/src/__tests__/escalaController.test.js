@@ -5,12 +5,30 @@ const { Escala, Evento, Funcionario, Funcao } = require('../models');
 jest.mock('../middleware/auth', () => (req, res, next) => next());
 jest.mock('../middleware/roles', () => () => (req, res, next) => next());
 
-jest.mock('../models', () => ({
-  Escala: { findAll: jest.fn(), findOne: jest.fn(), create: jest.fn(), findByPk: jest.fn() },
-  Evento: { findByPk: jest.fn() },
-  Funcionario: { findAll: jest.fn(), findByPk: jest.fn() },
-  Funcao: {},
-}));
+// O controller usa Escala.escalaPorFiltro de duas formas: buscando por id (registro
+// específico) e por evento+funcionário (checagem de alocação duplicada).
+// O mock despacha para um jest.fn() diferente conforme o `where`, para que
+// cada caso possa ser controlado isoladamente nos testes.
+jest.mock('../models', () => {
+  const escalaPorId = jest.fn();
+  const escalaPorFiltro = jest.fn();
+  return {
+    Escala: {
+      findAll: jest.fn(),
+      create: jest.fn(),
+      escalaPorId,
+      escalaPorFiltro,
+      findOne: jest.fn((options) =>
+        options && options.where && options.where.id
+          ? escalaPorId(options)
+          : escalaPorFiltro(options)
+      ),
+    },
+    Evento: { findOne: jest.fn() },
+    Funcionario: { findAll: jest.fn(), findOne: jest.fn() },
+    Funcao: {},
+  };
+});
 
 const mockEvento = {
   id: 'evt-1',
@@ -53,12 +71,12 @@ describe('EscalaController — conflito com gap de 2h', () => {
 
   describe('alocar (POST /api/escala)', () => {
     test('deve alocar funcionário SEM conflito (gap de 4h >= 2h)', async () => {
-      Evento.findByPk.mockResolvedValue(mockEvento);
-      Funcionario.findByPk.mockResolvedValue(mockFuncionario);
+      Evento.findOne.mockResolvedValue(mockEvento);
+      Funcionario.findOne.mockResolvedValue(mockFuncionario);
       Escala.findAll.mockResolvedValue([]); // buscarEscalasMesmoDia → vazio
-      Escala.findOne.mockResolvedValue(null); // não está alocado ainda
+      Escala.escalaPorFiltro.mockResolvedValue(null); // não está alocado ainda
       Escala.create.mockResolvedValue({ id: 'esc-1', eventoId: 'evt-1', funcionarioId: 'func-1' });
-      Escala.findByPk.mockResolvedValue(mockEscalaCriada);
+      Escala.escalaPorId.mockResolvedValue(mockEscalaCriada);
 
       const res = await request(app)
         .post('/api/escala')
@@ -70,12 +88,12 @@ describe('EscalaController — conflito com gap de 2h', () => {
     });
 
     test('deve alocar funcionário SEM outra escala no mesmo dia', async () => {
-      Evento.findByPk.mockResolvedValue(mockEvento);
-      Funcionario.findByPk.mockResolvedValue(mockFuncionario);
+      Evento.findOne.mockResolvedValue(mockEvento);
+      Funcionario.findOne.mockResolvedValue(mockFuncionario);
       Escala.findAll.mockResolvedValue([]);
-      Escala.findOne.mockResolvedValue(null);
+      Escala.escalaPorFiltro.mockResolvedValue(null);
       Escala.create.mockResolvedValue({ id: 'esc-1', eventoId: 'evt-1', funcionarioId: 'func-1' });
-      Escala.findByPk.mockResolvedValue(mockEscalaCriada);
+      Escala.escalaPorId.mockResolvedValue(mockEscalaCriada);
 
       const res = await request(app)
         .post('/api/escala')
@@ -88,8 +106,8 @@ describe('EscalaController — conflito com gap de 2h', () => {
     test('deve retornar 409 se houver conflito com gap < 2h', async () => {
       // Evento principal: 08:00-10:00
       // Outro evento: 11:00-13:00 → gap 1h < 2h → CONFLITO
-      Evento.findByPk.mockResolvedValue(mockEvento);
-      Funcionario.findByPk.mockResolvedValue(mockFuncionario);
+      Evento.findOne.mockResolvedValue(mockEvento);
+      Funcionario.findOne.mockResolvedValue(mockFuncionario);
 
       const escalaConflito = {
         id: 'esc-outro',
@@ -135,9 +153,9 @@ describe('EscalaController — conflito com gap de 2h', () => {
 
   describe('alocarLote (POST /api/escala/lote)', () => {
     test('deve alocar lote com gap suficiente — 201 sem erros', async () => {
-      Evento.findByPk.mockResolvedValue(mockEvento);
+      Evento.findOne.mockResolvedValue(mockEvento);
 
-      Funcionario.findByPk
+      Funcionario.findOne
         .mockResolvedValueOnce(mockFuncionario)   // func-1
         .mockResolvedValueOnce(mockFuncionario2);  // func-2
 
@@ -145,7 +163,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
         .mockResolvedValueOnce([]) // buscarEscalasMesmoDia func-1 → sem conflito
         .mockResolvedValueOnce([]); // buscarEscalasMesmoDia func-2 → sem conflito
 
-      Escala.findOne
+      Escala.escalaPorFiltro
         .mockResolvedValueOnce(null) // func-1 não alocado
         .mockResolvedValueOnce(null); // func-2 não alocado
 
@@ -164,7 +182,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
     });
 
     test('deve alocar lote com conflito em um funcionário — 201 com erros', async () => {
-      Evento.findByPk.mockResolvedValue(mockEvento);
+      Evento.findOne.mockResolvedValue(mockEvento);
       // func-1: alocado em outro evento com conflito
       // func-2: OK
       const escalaConflito = {
@@ -179,7 +197,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
         },
       };
 
-      Funcionario.findByPk
+      Funcionario.findOne
         .mockResolvedValueOnce(mockFuncionario)  // func-1
         .mockResolvedValueOnce(mockFuncionario2); // func-2
 
@@ -187,7 +205,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
         .mockResolvedValueOnce([escalaConflito]) // func-1 tem conflito
         .mockResolvedValueOnce([]);               // func-2 sem conflito
 
-      Escala.findOne
+      Escala.escalaPorFiltro
         .mockResolvedValueOnce(null); // func-2 não alocado (func-1 skipped por conflito)
 
       Escala.create
@@ -235,7 +253,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
 
   describe('listarDisponiveis (GET /api/escala/disponiveis/:eventoId)', () => {
     test('deve listar funcionário SEM escala no mesmo dia como disponível', async () => {
-      Evento.findByPk.mockResolvedValue(mockEvento);
+      Evento.findOne.mockResolvedValue(mockEvento);
 
       // Primeira consulta: escalas neste evento → vazia
       // Segunda consulta: escalas em outros eventos no mesmo dia → vazia
@@ -259,7 +277,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
     test('deve listar funcionário COM escala no mesmo dia COM gap >= 2h como disponível', async () => {
       // Evento principal: 08:00-10:00
       // Outro evento: 14:00-16:00 → gap 4h >= 2h → SEM CONFLITO
-      Evento.findByPk.mockResolvedValue(mockEvento);
+      Evento.findOne.mockResolvedValue(mockEvento);
 
       Escala.findAll
         .mockResolvedValueOnce([]) // jaEscalados neste evento → vazio
@@ -292,7 +310,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
     test('deve listar funcionário COM escala no mesmo dia COM gap < 2h como indisponível', async () => {
       // Evento principal: 08:00-10:00
       // Outro evento: 11:00-13:00 → gap 1h < 2h → CONFLITO
-      Evento.findByPk.mockResolvedValue(mockEvento);
+      Evento.findOne.mockResolvedValue(mockEvento);
 
       Escala.findAll
         .mockResolvedValueOnce([]) // jaEscalados neste evento → vazio
@@ -321,7 +339,7 @@ describe('EscalaController — conflito com gap de 2h', () => {
     });
 
     test('deve retornar 404 se evento não for encontrado', async () => {
-      Evento.findByPk.mockResolvedValue(null);
+      Evento.findOne.mockResolvedValue(null);
 
       const res = await request(app)
         .get('/api/escala/disponiveis/evt-inexistente');

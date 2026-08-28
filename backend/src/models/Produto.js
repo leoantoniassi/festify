@@ -11,6 +11,12 @@ const Produto = sequelize.define('Produto', {
     primaryKey: true,
     field: 'prd_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'prd_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(150),
     allowNull: false,

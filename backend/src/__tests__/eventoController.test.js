@@ -6,10 +6,10 @@ jest.mock('../middleware/auth', () => (req, res, next) => next());
 jest.mock('../middleware/roles', () => () => (req, res, next) => next());
 
 jest.mock('../models', () => ({
-  Evento: { create: jest.fn(), findByPk: jest.fn(), findAndCountAll: jest.fn(), update: jest.fn() },
-  Cliente: { findByPk: jest.fn() },
-  Local: { findByPk: jest.fn() },
-  Orcamento: { findByPk: jest.fn() },
+  Evento: { create: jest.fn(), findOne: jest.fn(), findAndCountAll: jest.fn(), update: jest.fn() },
+  Cliente: { findOne: jest.fn() },
+  Local: { findOne: jest.fn() },
+  Orcamento: { findOne: jest.fn() },
 }));
 
 describe('EventoController — verificação de capacidade', () => {
@@ -55,8 +55,8 @@ describe('EventoController — verificação de capacidade', () => {
 
   describe('POST /api/eventos', () => {
     test('deve criar evento com qtdPessoas dentro da capacidade (sem warning)', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
-      Local.findByPk.mockResolvedValue(mockLocalComCapacidade);
+      Cliente.findOne.mockResolvedValue(mockCliente);
+      Local.findOne.mockResolvedValue(mockLocalComCapacidade);
       Evento.create.mockResolvedValue({ ...mockEvento, qtdPessoas: 40 });
 
       const res = await request(app)
@@ -68,8 +68,8 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve criar evento com qtdPessoas EXCEDENDO capacidade (retornar warning)', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
-      Local.findByPk.mockResolvedValue(mockLocalComCapacidade);
+      Cliente.findOne.mockResolvedValue(mockCliente);
+      Local.findOne.mockResolvedValue(mockLocalComCapacidade);
       Evento.create.mockResolvedValue({ ...mockEvento, qtdPessoas: 150 });
 
       const res = await request(app)
@@ -84,7 +84,7 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve criar evento sem localId (sem warning de capacidade)', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.create.mockResolvedValue(mockEvento);
 
       const res = await request(app)
@@ -96,8 +96,8 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve criar evento com local sem capacidade definida (sem warning)', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
-      Local.findByPk.mockResolvedValue(mockLocalSemCapacidade);
+      Cliente.findOne.mockResolvedValue(mockCliente);
+      Local.findOne.mockResolvedValue(mockLocalSemCapacidade);
       Evento.create.mockResolvedValue({ ...mockEvento, localId: 'loc-2', qtdPessoas: 150 });
 
       const res = await request(app)
@@ -109,7 +109,7 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve criar evento com horarioTermino válido', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.create.mockResolvedValue({ ...mockEvento, horarioTermino: '2026-12-31T23:59:59.000Z' });
 
       const res = await request(app)
@@ -150,8 +150,8 @@ describe('EventoController — verificação de capacidade', () => {
 
   describe('PUT /api/eventos/:id', () => {
     test('deve atualizar evento excedendo capacidade (retornar warning)', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
-      Local.findByPk.mockResolvedValue(mockLocalComCapacidade);
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Local.findOne.mockResolvedValue(mockLocalComCapacidade);
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -163,8 +163,8 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve atualizar evento com qtdPessoas = 0 (sem warning)', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
-      Local.findByPk.mockResolvedValue(mockLocalComCapacidade);
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Local.findOne.mockResolvedValue(mockLocalComCapacidade);
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -176,7 +176,7 @@ describe('EventoController — verificação de capacidade', () => {
 
     test('deve atualizar evento sem localId (sem warning)', async () => {
       const updateMock = jest.fn().mockResolvedValue(true);
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: updateMock });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: updateMock });
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -187,7 +187,7 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve atualizar evento com horarioTermino válido', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -198,7 +198,7 @@ describe('EventoController — verificação de capacidade', () => {
     });
 
     test('deve retornar 400 se horarioTermino for inválido no PUT', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)

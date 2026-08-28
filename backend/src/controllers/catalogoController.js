@@ -44,7 +44,7 @@ async function criar(req, res, next) {
 // PUT /api/catalogos/:id
 async function atualizar(req, res, next) {
   try {
-    const catalogo = await Catalogo.findByPk(req.params.id);
+    const catalogo = await Catalogo.findOne({ where: { id: req.params.id } });
     if (!catalogo) {
       return res.status(404).json({ success: false, message: 'Catálogo não encontrado.' });
     }
@@ -73,7 +73,7 @@ async function atualizar(req, res, next) {
 // DELETE /api/catalogos/:id (soft delete)
 async function remover(req, res, next) {
   try {
-    const catalogo = await Catalogo.findByPk(req.params.id);
+    const catalogo = await Catalogo.findOne({ where: { id: req.params.id } });
     if (!catalogo) {
       return res.status(404).json({ success: false, message: 'Catálogo não encontrado.' });
     }

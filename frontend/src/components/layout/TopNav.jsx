@@ -12,7 +12,7 @@ export default function TopNav({ onMenuClick }) {
   };
 
   return (
-    <header className="flex justify-between items-center w-full px-4 md:px-8 h-16 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-outline-variant/30">
+    <header className="flex justify-between items-center w-full px-4 md:px-8 h-16 sticky top-0 z-30 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
       {/* Lado Esquerdo: Menu Mobile e Pesquisa */}
       <div className="flex items-center gap-4">
         {/* Botão do Menu Hambúrguer (Apenas Mobile) */}

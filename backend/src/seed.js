@@ -23,8 +23,8 @@ async function seed() {
     console.log('✅ Seed concluído com sucesso!');
     console.log('');
     console.log('📌 Credenciais de acesso:');
-    console.log('   Gerente:  gerente@maisalegria.com  / 123456');
-    console.log('   Operador: operador@maisalegria.com / 123456');
+    console.log('   Gerente:  gerente@festify.local  / 123456');
+    console.log('   Operador: operador@festify.local / 123456');
     console.log('');
     process.exit(0);
   } catch (error) {

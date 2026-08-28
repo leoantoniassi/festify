@@ -71,7 +71,7 @@ export default function DashboardPage() {
 
       {/* Metrics Bento */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 relative overflow-hidden group">
+        <div className="bg-surface p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full group-hover:scale-110 transition-transform" />
           <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Próximos Eventos</p>
           <div className="flex items-baseline gap-2">
@@ -80,7 +80,7 @@ export default function DashboardPage() {
           <p className="text-xs text-outline mt-2">Próximos 30 dias</p>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
+        <div className="bg-surface p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
           <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Orçamentos Pendentes</p>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-headline font-extrabold text-secondary">{stats.orcamentosPendentes || 0}</span>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
           <p className="text-xs text-outline mt-2">Aguardando aprovação</p>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
+        <div className="bg-surface p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
           <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Total de Clientes</p>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-headline font-extrabold text-on-surface">{stats.clientes || 0}</span>
@@ -96,7 +96,7 @@ export default function DashboardPage() {
           <p className="text-xs text-outline mt-2">Parcerias ativas</p>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
+        <div className="bg-surface p-6 rounded-3xl px-8 editorial-shadow border border-outline-variant/10 group">
           <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Funcionários</p>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-headline font-extrabold text-tertiary">{stats.funcionarios || 0}</span>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Events Table */}
-      <section className="bg-white rounded-xl editorial-shadow overflow-hidden">
+      <section className="bg-surface rounded-xl editorial-shadow overflow-hidden">
         <div className="p-8 flex justify-between items-center border-b border-outline-variant/10">
           <h3 className="font-headline text-2xl font-bold text-on-surface">Próximos Eventos</h3>
           <button onClick={() => navigate('/eventos')} className="text-tertiary font-bold text-xs hover:underline">Ver Todos</button>

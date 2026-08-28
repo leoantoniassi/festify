@@ -1,12 +1,13 @@
 {
-  "name": "mais-alegria-backend",
+  "name": "festify-backend",
   "version": "1.0.0",
-  "description": "Backend API do Projeto Mais Alegria — Gestão de Eventos",
+  "description": "API do Festify — plataforma SaaS white label de gestão de eventos e buffets",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed": "node src/seed.js",
+    "migrate": "node scripts/migrate.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch --detectOpenHandles",
     "dockerReset": "docker compose down -v && docker compose build && docker compose up -d && docker compose exec backend node src/seed.js"
@@ -17,7 +18,7 @@
     "api",
     "express"
   ],
-  "author": "Projeto Mais Alegria",
+  "author": "L2Tech",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

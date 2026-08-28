@@ -13,6 +13,12 @@ const Orcamento = sequelize.define(
       primaryKey: true,
       field: "orc_id",
     },
+    // FK para empresas (tenant)
+    empresaId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      field: "orc_emp_id",
+    },
     clienteId: {
       type: DataTypes.UUID,
       allowNull: false,

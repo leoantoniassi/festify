@@ -6,6 +6,7 @@ const { Cliente, Orcamento, Evento, Documento } = require('../models');
 const { gerarLinkWhatsApp } = require('../utils/whatsapp');
 const { warning } = require('../utils/response');
 const { isValidUUID } = require('../utils/validators');
+const { saudacaoWhatsapp } = require('../utils/brand');
 
 // GET /api/clientes
 async function listar(req, res, next) {
@@ -55,7 +56,8 @@ async function buscarPorId(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do cliente inválido.' });
     }
-    const cliente = await Cliente.findByPk(req.params.id, {
+    const cliente = await Cliente.findOne({
+      where: { id: req.params.id },
       include: [
         { model: Orcamento, as: 'orcamentos' },
         { model: Evento, as: 'eventos' },
@@ -136,7 +138,7 @@ async function atualizar(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do cliente inválido.' });
     }
-    const cliente = await Cliente.findByPk(req.params.id);
+    const cliente = await Cliente.findOne({ where: { id: req.params.id } });
     if (!cliente) {
       return res.status(404).json({
         success: false,
@@ -177,7 +179,7 @@ async function remover(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do cliente inválido.' });
     }
-    const cliente = await Cliente.findByPk(req.params.id);
+    const cliente = await Cliente.findOne({ where: { id: req.params.id } });
     if (!cliente) {
       return res.status(404).json({
         success: false,
@@ -216,7 +218,7 @@ async function whatsapp(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do cliente inválido.' });
     }
-    const cliente = await Cliente.findByPk(req.params.id);
+    const cliente = await Cliente.findOne({ where: { id: req.params.id } });
     if (!cliente) {
       return res.status(404).json({
         success: false,
@@ -226,7 +228,7 @@ async function whatsapp(req, res, next) {
 
     const link = gerarLinkWhatsApp(
       cliente.telefone,
-      `Ola ${cliente.nome}, aqui e a equipe Mais Alegria.`
+      await saudacaoWhatsapp(cliente.nome)
     );
 
     return res.json({
@@ -244,7 +246,7 @@ async function reativar(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do cliente inválido.' });
     }
-    const cliente = await Cliente.scope('comDeletados').findByPk(req.params.id);
+    const cliente = await Cliente.scope('comDeletados').findOne({ where: { id: req.params.id } });
     if (!cliente) {
       return res.status(404).json({ success: false, message: 'Cliente não encontrado.' });
     }

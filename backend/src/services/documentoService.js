@@ -2,7 +2,7 @@ const { Documento } = require('../models');
 const { detectarTipo, isUrlExterna } = require('../utils/fileUtils');
 
 async function findDocumentoOrFail(id) {
-  const documento = await Documento.findByPk(id);
+  const documento = await Documento.findOne({ where: { id: id } });
   if (!documento) {
     const err = new Error('Documento não encontrado.');
     err.statusCode = 404;
