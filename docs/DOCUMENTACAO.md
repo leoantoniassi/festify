@@ -502,9 +502,9 @@ npm run dev    # Roda na porta 5173 com proxy para 3001
 
 | Email | Senha (hash) | Role |
 |---|---|---|
-| admin@maisalegria.com | (hash bcrypt) | admin |
-| gerente@maisalegria.com | (hash bcrypt) | gerente |
-| operador@maisalegria.com | (hash bcrypt) | operador |
+<!-- | admin@maisalegria.com | (hash bcrypt) | admin | -->
+| gerente@festify.com | (hash bcrypt) | gerente |
+| operador@festify.com | (hash bcrypt) | operador |
 
 ---
 
