@@ -258,13 +258,13 @@ export default function CadastrosPage() {
               className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold text-sm transition-all whitespace-nowrap ${
                 isActive
                   ? `${tc.bg} ${tc.text} shadow-lg ${tc.shadow}`
-                  : 'bg-white border border-surface-container-high text-on-surface-variant hover:bg-surface-container-low'
+                  : 'bg-surface border border-surface-container-high text-on-surface-variant hover:bg-surface-container-low'
               }`}
             >
               <span className={`material-symbols-outlined text-xl ${isActive ? 'filled' : ''}`}>{table.icon}</span>
               <span>{table.label}</span>
               <span className={`ml-1 px-2.5 py-0.5 rounded-full text-xs font-black ${
-                isActive ? 'bg-white/25' : 'bg-surface-container text-on-surface-variant'
+                isActive ? 'bg-surface/25' : 'bg-surface-container text-on-surface-variant'
               }`}>
                 {count}
               </span>
@@ -280,7 +280,7 @@ export default function CadastrosPage() {
           <div className="bg-surface-container-low p-6 rounded-xl space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Pesquisar</p>
             <input
-              className="w-full bg-white border-none rounded-full py-3 px-5 focus:ring-2 focus:ring-primary text-sm"
+              className="w-full bg-surface border-none rounded-full py-3 px-5 focus:ring-2 focus:ring-primary text-sm"
               placeholder="Buscar..."
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -302,7 +302,7 @@ export default function CadastrosPage() {
 
         {/* ─── Table ──────────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-9">
-          <div className="bg-white border border-surface-container-high rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-surface border border-surface-container-high rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -412,7 +412,7 @@ export default function CadastrosPage() {
       {/* ─── Slide-in Panel ──────────────────────────────────── */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <h3 className="text-2xl font-headline font-extrabold">{editing ? 'Editar' : 'Novo'} Registro</h3>

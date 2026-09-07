@@ -31,13 +31,13 @@ jest.mock('../middleware/roles', () => (...allowedRoles) => (req, res, next) => 
 jest.mock('../models', () => ({
   Evento: {
     create: jest.fn(),
-    findByPk: jest.fn(),
+    findOne: jest.fn(),
     findAndCountAll: jest.fn(),
     update: jest.fn(),
   },
-  Cliente: { findByPk: jest.fn() },
-  Local: { findByPk: jest.fn() },
-  Orcamento: { findByPk: jest.fn() },
+  Cliente: { findOne: jest.fn() },
+  Local: { findOne: jest.fn() },
+  Orcamento: { findOne: jest.fn() },
 }));
 
 describe('Roles — Eventos (operador)', () => {
@@ -88,7 +88,7 @@ describe('Roles — Eventos (operador)', () => {
   // ==========================================================
   describe('POST /api/eventos (operador)', () => {
     test('deve permitir que operador crie evento → 201', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.create.mockResolvedValue(mockEvento);
 
       const res = await request(app)
@@ -100,7 +100,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('deve retornar 400 se status for inválido', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
 
       const res = await request(app)
         .post('/api/eventos')
@@ -111,7 +111,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('deve aceitar status válido: pendente', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.create.mockResolvedValue(mockEvento);
 
       const res = await request(app)
@@ -127,7 +127,7 @@ describe('Roles — Eventos (operador)', () => {
   // ==========================================================
   describe('PUT /api/eventos/:id (operador)', () => {
     test('deve permitir que operador edite evento → 200', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -143,7 +143,7 @@ describe('Roles — Eventos (operador)', () => {
   // ==========================================================
   describe('PATCH /api/eventos/:id/status (operador)', () => {
     test('deve permitir que operador mude status → 200', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .patch('/api/eventos/' + EVT_ID + '/status')
@@ -179,7 +179,7 @@ describe('Roles — Eventos (operador)', () => {
       mockUser = { id: 'user-1', role: 'gerente' };
 
       // Evento com data no passado (para não disparar warning)
-      Evento.findByPk.mockResolvedValue({
+      Evento.findOne.mockResolvedValue({
         ...mockEvento,
         dataEvento: '2025-01-01',
         update: jest.fn().mockResolvedValue(true),
@@ -198,7 +198,7 @@ describe('Roles — Eventos (operador)', () => {
   // ==========================================================
   describe('Validação de status no criar evento', () => {
     test('deve rejeitar status "aprovado" (não permitido para eventos)', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
 
       const res = await request(app)
         .post('/api/eventos')
@@ -209,7 +209,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('deve rejeitar status numérico', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
 
       const res = await request(app)
         .post('/api/eventos')
@@ -229,7 +229,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('POST /api/eventos → 201', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Evento.create.mockResolvedValue(mockEvento);
 
       const res = await request(app)
@@ -240,7 +240,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('PUT /api/eventos/:id → 200', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .put('/api/eventos/' + EVT_ID)
@@ -250,7 +250,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('PATCH /api/eventos/:id/status → 200', async () => {
-      Evento.findByPk.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
+      Evento.findOne.mockResolvedValue({ ...mockEvento, update: jest.fn().mockResolvedValue(true) });
 
       const res = await request(app)
         .patch('/api/eventos/' + EVT_ID + '/status')
@@ -260,7 +260,7 @@ describe('Roles — Eventos (operador)', () => {
     });
 
     test('DELETE /api/eventos/:id → 200', async () => {
-      Evento.findByPk.mockResolvedValue({
+      Evento.findOne.mockResolvedValue({
         ...mockEvento,
         dataEvento: '2025-01-01',
         update: jest.fn().mockResolvedValue(true),

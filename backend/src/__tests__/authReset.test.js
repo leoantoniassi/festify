@@ -16,14 +16,27 @@ jest.mock('../models', () => ({
   Usuario: {
     findOne: jest.fn(),
   },
+  // Multilocação: recuperar-senha resolve o tenant antes de buscar o usuário
+  Empresa: {
+    findOne: jest.fn(),
+    findAll: jest.fn(),
+  },
 }));
+
+// Empresa única e ativa — resolverTenant a assume quando nenhum slug é informado
+const empresaPadrao = {
+  id: 'empresa-teste',
+  nomeFantasia: 'Buffet Teste',
+  slug: 'buffet-teste',
+  status: 'ativo',
+};
 
 // Mock do emailService — não envia e-mails reais nos testes
 jest.mock('../services/emailService', () => ({
   enviarEmailRecuperacaoSenha: jest.fn().mockResolvedValue(undefined),
 }));
 
-const { Usuario } = require('../models');
+const { Usuario, Empresa } = require('../models');
 const { enviarEmailRecuperacaoSenha } = require('../services/emailService');
 
 // ── Setup App ────────────────────────────────────────────────
@@ -33,6 +46,8 @@ describe('Recuperação e Redefinição de Senha', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    Empresa.findAll.mockResolvedValue([empresaPadrao]);
+    Empresa.findOne.mockResolvedValue(empresaPadrao);
     app = express();
     app.use(express.json());
     app.use('/api/auth', require('../routes/auth.routes'));

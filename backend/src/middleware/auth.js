@@ -2,6 +2,7 @@
 // Middleware: Autenticação JWT
 // ============================================================
 const jwt = require('jsonwebtoken');
+const comEscopoDeTenant = require('./tenant');
 
 function auth(req, res, next) {
   try {
@@ -30,9 +31,11 @@ function auth(req, res, next) {
       id: decoded.id,
       email: decoded.email,
       role: decoded.role,
+      empresaId: decoded.empresaId || null,
     };
 
-    return next();
+    // Abre o escopo de tenant para o resto da requisição
+    return comEscopoDeTenant(req, res, next);
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({

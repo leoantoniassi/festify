@@ -11,6 +11,12 @@ const Local = sequelize.define('Local', {
     primaryKey: true,
     field: 'loc_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'loc_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(150),
     allowNull: false,

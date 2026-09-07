@@ -11,6 +11,12 @@ const CategoriaFornecedor = sequelize.define('CategoriaFornecedor', {
     primaryKey: true,
     field: 'caf_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'caf_emp_id',
+  },
   nome: {
     type: DataTypes.STRING(80),
     allowNull: false,

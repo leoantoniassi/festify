@@ -30,7 +30,7 @@ async function criarFuncao(req, res, next) {
 // PUT /api/lookup/funcoes/:id
 async function atualizarFuncao(req, res, next) {
   try {
-    const funcao = await Funcao.findByPk(req.params.id);
+    const funcao = await Funcao.findOne({ where: { id: req.params.id } });
     if (!funcao) return res.status(404).json({ success: false, message: 'Função não encontrada.' });
     const { nome, descricao } = req.body;
     if (!nome) return res.status(400).json({ success: false, message: 'Nome é obrigatório.' });
@@ -44,7 +44,7 @@ async function atualizarFuncao(req, res, next) {
 // DELETE /api/lookup/funcoes/:id
 async function removerFuncao(req, res, next) {
   try {
-    const funcao = await Funcao.findByPk(req.params.id);
+    const funcao = await Funcao.findOne({ where: { id: req.params.id } });
     if (!funcao) return res.status(404).json({ success: false, message: 'Função não encontrada.' });
     await funcao.destroy();
     return res.json({ success: true, message: 'Função removida com sucesso!' });
@@ -80,7 +80,7 @@ async function criarCategoriaFornecedor(req, res, next) {
 // PUT /api/lookup/categorias-fornecedor/:id
 async function atualizarCategoriaFornecedor(req, res, next) {
   try {
-    const categoria = await CategoriaFornecedor.findByPk(req.params.id);
+    const categoria = await CategoriaFornecedor.findOne({ where: { id: req.params.id } });
     if (!categoria) return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     const { nome, descricao } = req.body;
     if (!nome) return res.status(400).json({ success: false, message: 'Nome é obrigatório.' });
@@ -94,7 +94,7 @@ async function atualizarCategoriaFornecedor(req, res, next) {
 // DELETE /api/lookup/categorias-fornecedor/:id
 async function removerCategoriaFornecedor(req, res, next) {
   try {
-    const categoria = await CategoriaFornecedor.findByPk(req.params.id);
+    const categoria = await CategoriaFornecedor.findOne({ where: { id: req.params.id } });
     if (!categoria) return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     await categoria.destroy();
     return res.json({ success: true, message: 'Categoria removida com sucesso!' });
@@ -130,7 +130,7 @@ async function criarCategoriaProduto(req, res, next) {
 // PUT /api/lookup/categorias-produto/:id
 async function atualizarCategoriaProduto(req, res, next) {
   try {
-    const categoria = await CategoriaProduto.findByPk(req.params.id);
+    const categoria = await CategoriaProduto.findOne({ where: { id: req.params.id } });
     if (!categoria) return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     const { nome, descricao } = req.body;
     if (!nome) return res.status(400).json({ success: false, message: 'Nome é obrigatório.' });
@@ -144,7 +144,7 @@ async function atualizarCategoriaProduto(req, res, next) {
 // DELETE /api/lookup/categorias-produto/:id
 async function removerCategoriaProduto(req, res, next) {
   try {
-    const categoria = await CategoriaProduto.findByPk(req.params.id);
+    const categoria = await CategoriaProduto.findOne({ where: { id: req.params.id } });
     if (!categoria) return res.status(404).json({ success: false, message: 'Categoria não encontrada.' });
     await categoria.destroy();
     return res.json({ success: true, message: 'Categoria removida com sucesso!' });

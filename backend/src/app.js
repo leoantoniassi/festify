@@ -1,5 +1,5 @@
 // ============================================================
-// PROJETO MAIS ALEGRIA — Express App
+// FESTIFY — Express App
 // ============================================================
 const express = require('express');
 const cors = require('cors');
@@ -29,12 +29,14 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // ── Rotas ──────────────────────────────────────────────────
 app.use('/api', routes);
+// Alias versionado: o plano do app mobile especifica /api/v1.
+app.use('/api/v1', routes);
 
 // ── Health Check ───────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
   res.json({
     success: true,
-    message: 'API Mais Alegria funcionando!',
+    message: 'API Festify funcionando!',
     timestamp: new Date().toISOString(),
   });
 });

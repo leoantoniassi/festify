@@ -99,15 +99,15 @@ export default function CatalogosPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total de Catálogos</p>
             <p className="text-3xl font-headline font-extrabold text-tertiary">{catalogos.length}</p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Ativos</p>
             <p className="text-3xl font-headline font-extrabold text-primary">{catalogos.filter(c => c.ativo).length}</p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow flex items-center gap-4">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
               <span className="material-symbols-outlined text-on-surface filled">menu_book</span>
             </div>
@@ -119,7 +119,7 @@ export default function CatalogosPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
+        <div className="bg-surface rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -174,7 +174,7 @@ export default function CatalogosPage() {
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </button>
                         {user?.role !== 'operador' && (
-                          <button onClick={() => handleDelete(c.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all" title="Excluir">
+                          <button onClick={() => handleDelete(c.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-on-error transition-all" title="Excluir">
                             <span className="material-symbols-outlined text-lg">delete</span>
                           </button>
                         )}
@@ -194,7 +194,7 @@ export default function CatalogosPage() {
       {/* Slide-over Panel */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <h3 className="text-2xl font-headline font-extrabold text-on-surface">{editing ? 'Editar Catálogo' : 'Novo Catálogo'}</h3>
@@ -211,7 +211,7 @@ export default function CatalogosPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Título *</label>
                   <input
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all"
                     placeholder="Ex: Buffet Infantil Completo"
                     value={form.titulo}
                     onChange={(e) => setForm({ ...form, titulo: e.target.value })}
@@ -223,7 +223,7 @@ export default function CatalogosPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Descrição</label>
                   <textarea
-                    className="w-full bg-surface-container-low border-none rounded-2xl py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all resize-none"
+                    className="w-full bg-surface-container-low border-none rounded-2xl py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all resize-none"
                     placeholder="Descreva o que está incluso no buffet..."
                     rows={3}
                     value={form.descricao}
@@ -235,7 +235,7 @@ export default function CatalogosPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Preço Base (R$)</label>
                   <input
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all"
                     type="number"
                     placeholder="0,00"
                     step="0.01"
@@ -249,7 +249,7 @@ export default function CatalogosPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Localização do Arquivo</label>
                   <input
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all"
                     type="text"
                     placeholder="Ex: C:\Catálogos\buffet.pdf ou https://drive.google.com/..."
                     value={form.urlExterna}
@@ -262,7 +262,7 @@ export default function CatalogosPage() {
             </div>
 
             <div className="p-8 bg-surface-container-low flex gap-4 rounded-tl-3xl">
-              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-white transition-all">
+              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-surface transition-all">
                 Cancelar
               </button>
               <button type="submit" form="catalogo-form" disabled={saving} className="flex-[2] bg-primary text-on-primary py-3.5 rounded-full font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60">

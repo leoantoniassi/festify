@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
+import BrandLogo from '../../components/BrandLogo';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function RecuperarSenhaPage() {
+  const nomeFantasia = useTheme()?.config?.nomeFantasia || 'Festify';
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,10 +40,8 @@ export default function RecuperarSenhaPage() {
         </div>
         <div className="relative z-10 text-white max-w-lg">
           <div className="flex items-center gap-3 mb-6">
-            <span className="material-symbols-outlined text-4xl bg-primary text-on-primary p-2 rounded-full filled">
-              celebration
-            </span>
-            <h1 className="font-headline font-extrabold text-4xl tracking-tight">Mais Alegria</h1>
+            <BrandLogo tamanho="xl" />
+            <h1 className="font-headline font-extrabold text-4xl tracking-tight">{nomeFantasia}</h1>
           </div>
           <p className="font-headline text-2xl font-medium leading-tight">
             Tudo o que você precisa para gerenciar seus eventos em um só lugar.
@@ -50,15 +51,13 @@ export default function RecuperarSenhaPage() {
       </section>
 
       {/* ── Lado do Formulário ──────────────────────────────── */}
-      <section className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 sm:px-12 md:px-24 bg-white">
+      <section className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 sm:px-12 md:px-24 bg-surface">
         <div className="w-full max-w-md">
 
           {/* Mobile Branding */}
           <div className="lg:hidden flex flex-col items-center mb-12">
-            <div className="bg-primary p-3 rounded-full mb-4 shadow-xl shadow-primary/20">
-              <span className="material-symbols-outlined text-on-primary text-3xl filled">celebration</span>
-            </div>
-            <h2 className="font-headline font-extrabold text-3xl text-on-surface tracking-tight">Mais Alegria</h2>
+            <BrandLogo tamanho="lg" className="mb-4 shadow-xl shadow-primary/20" />
+            <h2 className="font-headline font-extrabold text-3xl text-on-surface tracking-tight">{nomeFantasia}</h2>
           </div>
 
           {/* Tela de Sucesso */}
@@ -116,7 +115,7 @@ export default function RecuperarSenhaPage() {
                     <input
                       id="email"
                       type="email"
-                      placeholder="seuemail@maisalegria.com"
+                      placeholder="seu@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -164,7 +163,7 @@ export default function RecuperarSenhaPage() {
               <footer className="mt-16 text-center">
                 <p className="text-on-surface-variant text-sm flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined text-secondary text-sm filled">favorite</span>
-                  Mais Alegria — Gestão de Eventos
+                  {nomeFantasia} — Gestão de Eventos
                 </p>
               </footer>
             </>

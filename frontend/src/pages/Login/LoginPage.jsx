@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import BrandLogo from '../../components/BrandLogo';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function LoginPage() {
+  const nomeFantasia = useTheme()?.config?.nomeFantasia || 'Festify';
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,8 +42,8 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10 text-white max-w-lg">
           <div className="flex items-center gap-3 mb-6">
-            <span className="material-symbols-outlined text-4xl bg-primary text-on-primary p-2 rounded-full filled">celebration</span>
-            <h1 className="font-headline font-extrabold text-4xl tracking-tight">Mais Alegria</h1>
+            <BrandLogo tamanho="xl" />
+            <h1 className="font-headline font-extrabold text-4xl tracking-tight">{nomeFantasia}</h1>
           </div>
           <p className="font-headline text-2xl font-medium leading-tight">Transformando Sonhos em Celebrações.</p>
           <div className="mt-8 h-1 w-24 bg-primary rounded-full" />
@@ -48,14 +51,12 @@ export default function LoginPage() {
       </section>
 
       {/* Form Side */}
-      <section className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 sm:px-12 md:px-24 bg-white">
+      <section className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 sm:px-12 md:px-24 bg-surface">
         <div className="w-full max-w-md">
           {/* Mobile Branding */}
           <div className="lg:hidden flex flex-col items-center mb-12">
-            <div className="bg-primary p-3 rounded-full mb-4 shadow-xl shadow-primary/20">
-              <span className="material-symbols-outlined text-on-primary text-3xl filled">celebration</span>
-            </div>
-            <h2 className="font-headline font-extrabold text-3xl text-on-surface tracking-tight">Mais Alegria</h2>
+            <BrandLogo tamanho="lg" className="mb-4 shadow-xl shadow-primary/20" />
+            <h2 className="font-headline font-extrabold text-3xl text-on-surface tracking-tight">{nomeFantasia}</h2>
           </div>
 
           {/* Welcome */}
@@ -82,7 +83,7 @@ export default function LoginPage() {
                   className="w-full h-14 pl-12 pr-4 py-3 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline"
                   id="email"
                   type="email"
-                  placeholder="admin@maisalegria.com"
+                  placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required

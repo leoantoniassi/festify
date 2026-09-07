@@ -30,7 +30,6 @@ jest.mock('../models', () => ({
   Usuario: {
     findAll: jest.fn(),
     findOne: jest.fn(),
-    findByPk: jest.fn(),
     create: jest.fn(),
   },
 }));

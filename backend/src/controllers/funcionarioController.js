@@ -6,6 +6,7 @@ const { Funcionario, Funcao, Escala, Evento } = require('../models');
 const { gerarLinkWhatsApp } = require('../utils/whatsapp');
 const { warning } = require('../utils/response');
 const { isValidUUID } = require('../utils/validators');
+const { saudacaoWhatsapp } = require('../utils/brand');
 
 // GET /api/funcionarios
 async function listar(req, res, next) {
@@ -61,7 +62,8 @@ async function buscarPorId(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do funcionário inválido.' });
     }
-    const funcionario = await Funcionario.findByPk(req.params.id, {
+    const funcionario = await Funcionario.findOne({
+      where: { id: req.params.id },
       include: [{ model: Funcao, as: 'funcao', attributes: ['id', 'nome'] }],
     });
     if (!funcionario) {
@@ -98,13 +100,14 @@ async function criar(req, res, next) {
       }
     }
 
-    const funcaoExiste = await Funcao.findByPk(funcaoId);
+    const funcaoExiste = await Funcao.findOne({ where: { id: funcaoId } });
     if (!funcaoExiste) {
       return res.status(404).json({ success: false, message: 'Função não encontrada.' });
     }
 
     const funcionario = await Funcionario.create({ nome, email: emailTratado, telefone, telefoneResidencial, funcaoId });
-    const funcionarioCompleto = await Funcionario.findByPk(funcionario.id, {
+    const funcionarioCompleto = await Funcionario.findOne({
+      where: { id: funcionario.id },
       include: [{ model: Funcao, as: 'funcao', attributes: ['id', 'nome'] }],
     });
 
@@ -124,7 +127,7 @@ async function atualizar(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do funcionário inválido.' });
     }
-    const funcionario = await Funcionario.findByPk(req.params.id);
+    const funcionario = await Funcionario.findOne({ where: { id: req.params.id } });
     if (!funcionario) {
       return res.status(404).json({
         success: false,
@@ -135,7 +138,7 @@ async function atualizar(req, res, next) {
     const { nome, email, telefone, telefoneResidencial, funcaoId } = req.body;
 
     if (funcaoId) {
-      const funcaoExiste = await Funcao.findByPk(funcaoId);
+      const funcaoExiste = await Funcao.findOne({ where: { id: funcaoId } });
       if (!funcaoExiste) {
         return res.status(404).json({ success: false, message: 'Função não encontrada.' });
       }
@@ -171,7 +174,7 @@ async function remover(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do funcionário inválido.' });
     }
-    const funcionario = await Funcionario.findByPk(req.params.id);
+    const funcionario = await Funcionario.findOne({ where: { id: req.params.id } });
     if (!funcionario) {
       return res.status(404).json({
         success: false,
@@ -215,7 +218,7 @@ async function whatsapp(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do funcionário inválido.' });
     }
-    const funcionario = await Funcionario.findByPk(req.params.id);
+    const funcionario = await Funcionario.findOne({ where: { id: req.params.id } });
     if (!funcionario) {
       return res.status(404).json({
         success: false,
@@ -232,7 +235,7 @@ async function whatsapp(req, res, next) {
 
     const link = gerarLinkWhatsApp(
       funcionario.telefone,
-      `Olá ${funcionario.nome}, aqui é a equipe Mais Alegria.`
+      await saudacaoWhatsapp(funcionario.nome)
     );
 
     return res.json({
@@ -250,7 +253,8 @@ async function buscarDetalhes(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do funcionário inválido.' });
     }
-    const funcionario = await Funcionario.findByPk(req.params.id, {
+    const funcionario = await Funcionario.findOne({
+      where: { id: req.params.id },
       include: [{ model: Funcao, as: 'funcao', attributes: ['id', 'nome'] }],
     });
     if (!funcionario) {

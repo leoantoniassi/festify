@@ -10,7 +10,12 @@ const { enviarConvite } = require('../services/emailService');
 // ── Helpers ──────────────────────────────────────────────────
 
 /**
- * Normaliza a role do usuário para os valores válidos.
+ * Normaliza a role para os valores atribuíveis pela API.
+ *
+ * 'super_admin' é o dono da plataforma e existe fora de qualquer empresa —
+ * nunca pode ser criado por esta rota, nem por um gerente de buffet.
+ * Provisionamento de super_admin é feito direto no banco.
+ *
  * @param {string} role
  * @returns {'gerente'|'operador'}
  */
@@ -78,7 +83,7 @@ async function criar(req, res, next) {
 
 async function atualizar(req, res, next) {
   try {
-    const usuario = await Usuario.findByPk(req.params.id);
+    const usuario = await Usuario.findOne({ where: { id: req.params.id } });
     if (!usuario) {
       return res.status(404).json({ success: false, message: 'Usuário não encontrado.' });
     }
@@ -115,7 +120,7 @@ async function atualizar(req, res, next) {
 
 async function remover(req, res, next) {
   try {
-    const usuario = await Usuario.findByPk(req.params.id);
+    const usuario = await Usuario.findOne({ where: { id: req.params.id } });
     if (!usuario) {
       return res.status(404).json({ success: false, message: 'Usuário não encontrado.' });
     }
@@ -221,6 +226,9 @@ async function definirSenhaConvite(req, res, next) {
 
     // Busca usuário pelo token e valida expiração
     const usuario = await Usuario.findOne({
+      // Rota pública: o token de convite é único globalmente e já identifica
+      // o usuário — e, por consequência, a empresa dele.
+      ignoraTenant: true,
       where: {
         conviteToken: token,
         conviteExpiracao: { [Op.gt]: new Date() },

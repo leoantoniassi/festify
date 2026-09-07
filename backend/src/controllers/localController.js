@@ -49,7 +49,7 @@ async function listar(req, res, next) {
 // GET /api/locais/:id
 async function buscarPorId(req, res, next) {
   try {
-    const local = await Local.findByPk(req.params.id);
+    const local = await Local.findOne({ where: { id: req.params.id } });
     if (!local) {
       return res.status(404).json({ success: false, message: 'Local não encontrado.' });
     }
@@ -88,7 +88,7 @@ async function criar(req, res, next) {
 // PUT /api/locais/:id
 async function atualizar(req, res, next) {
   try {
-    const local = await Local.findByPk(req.params.id);
+    const local = await Local.findOne({ where: { id: req.params.id } });
     if (!local) {
       return res.status(404).json({ success: false, message: 'Local não encontrado.' });
     }
@@ -125,7 +125,7 @@ async function atualizar(req, res, next) {
 // DELETE /api/locais/:id (soft delete)
 async function remover(req, res, next) {
   try {
-    const local = await Local.findByPk(req.params.id);
+    const local = await Local.findOne({ where: { id: req.params.id } });
     if (!local) {
       return res.status(404).json({ success: false, message: 'Local não encontrado.' });
     }

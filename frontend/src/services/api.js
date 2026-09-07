@@ -5,12 +5,21 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Interceptor: adiciona token JWT em todas as requests
+// Interceptor: adiciona token JWT e identifica a empresa (tenant)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  // Rotas públicas (login, recuperar senha, /tenant/config) não têm JWT,
+  // então a empresa precisa ser identificada pelo slug. Em produção o
+  // subdomínio já resolve; o header cobre dev e o app mobile.
+  const slug = localStorage.getItem('festify:slug');
+  if (slug) {
+    config.headers['X-Tenant-Slug'] = slug;
+  }
+
   return config;
 });
 

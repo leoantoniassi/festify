@@ -1,7 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ConfirmProvider } from './contexts/ConfirmContext';
 import AppLayout from './components/layout/AppLayout';
+import BrandLogo from './components/BrandLogo';
 import LoginPage from './pages/Login/LoginPage';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import ClientesPage from './pages/Clientes/ClientesPage';
@@ -14,6 +16,7 @@ import CatalogosPage from './pages/Catalogos/CatalogosPage';
 import FornecedoresPage from './pages/Fornecedores/FornecedoresPage';
 import UsuariosPage from './pages/Usuarios/UsuariosPage';
 import CadastrosPage from './pages/Cadastros/CadastrosPage';
+import ConfiguracoesPage from './pages/Configuracoes/ConfiguracoesPage';
 import DefinirSenhaPage from './pages/DefinirSenha/DefinirSenhaPage';
 import RecuperarSenhaPage from './pages/Login/RecuperarSenhaPage';
 import RedefinirSenhaPage from './pages/Login/RedefinirSenhaPage';
@@ -23,12 +26,10 @@ function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#fdfcf5' }}>
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: '#FEDC57', color: '#402d00' }}>
-            <span className="material-symbols-outlined filled">celebration</span>
-          </div>
-          <p style={{ color: '#4a4639', fontSize: '14px' }}>Carregando...</p>
+          <BrandLogo tamanho="lg" />
+          <p className="text-sm text-on-surface-variant">Carregando...</p>
         </div>
       </div>
     );
@@ -38,6 +39,15 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
+  return children;
+}
+
+function RoleRoute({ role, children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user || user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
   return children;
 }
 
@@ -80,7 +90,22 @@ function AppRoutes() {
         <Route path="documentos" element={<DocumentosPage />} />
         <Route path="catalogos" element={<CatalogosPage />} />
         <Route path="cadastros" element={<CadastrosPage />} />
-        <Route path="usuarios" element={<UsuariosPage />} />
+        <Route
+          path="usuarios"
+          element={
+            <RoleRoute role="gerente">
+              <UsuariosPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="configuracoes"
+          element={
+            <RoleRoute role="gerente">
+              <ConfiguracoesPage />
+            </RoleRoute>
+          }
+        />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -89,10 +114,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ConfirmProvider>
-        <AppRoutes />
-      </ConfirmProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ConfirmProvider>
+          <AppRoutes />
+        </ConfirmProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

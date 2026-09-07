@@ -119,11 +119,11 @@ export default function FornecedoresPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total Cadastrados</p>
             <p className="text-3xl font-headline font-extrabold text-tertiary">{total}</p>
           </div>
-          <div className="md:col-span-2 bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="md:col-span-2 bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <input
               className="w-full bg-surface-container-low border-none rounded-full py-3 px-6 focus:ring-2 focus:ring-primary transition-all placeholder:text-on-surface-variant/60 text-sm"
               placeholder="Pesquisar fornecedores por nome, email ou CNPJ..."
@@ -131,7 +131,7 @@ export default function FornecedoresPage() {
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <select
               className="w-full bg-surface-container-low border-none rounded-full py-3 px-4 focus:ring-2 focus:ring-primary transition-all text-sm appearance-none"
               value={categoriaFiltro}
@@ -146,7 +146,7 @@ export default function FornecedoresPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
+        <div className="bg-surface rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -191,7 +191,7 @@ export default function FornecedoresPage() {
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </button>
                         {user?.role !== 'operador' && (
-                          <button onClick={() => handleDelete(f.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all" title="Excluir">
+                          <button onClick={() => handleDelete(f.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-on-error transition-all" title="Excluir">
                             <span className="material-symbols-outlined text-lg">delete</span>
                           </button>
                         )}
@@ -220,7 +220,7 @@ export default function FornecedoresPage() {
       {/* Slide-over Panel — Cadastro/Edição de Fornecedor */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <h3 className="text-2xl font-headline font-extrabold text-on-surface">{editing ? 'Editar Fornecedor' : 'Novo Fornecedor'}</h3>
@@ -234,26 +234,26 @@ export default function FornecedoresPage() {
               <form id="supplier-form" className="space-y-6" onSubmit={handleSave}>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Nome / Razão Social</label>
-                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="Ex: Doces & Bolos Ltda" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} required />
+                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="Ex: Doces & Bolos Ltda" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} required />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email</label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@empresa.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@empresa.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Telefone</label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 3333-4444" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 3333-4444" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">CNPJ</label>
-                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="00.000.000/0001-00" value={form.cnpj} onChange={(e) => { const raw = e.target.value; const digits = raw.replace(/\D/g, ''); if (digits.length > 14) return; setForm({ ...form, cnpj: formatCpfCnpj(digits) }); }} required />
+                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="00.000.000/0001-00" value={form.cnpj} onChange={(e) => { const raw = e.target.value; const digits = raw.replace(/\D/g, ''); if (digits.length > 14) return; setForm({ ...form, cnpj: formatCpfCnpj(digits) }); }} required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Categoria</label>
                   <select
-                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all appearance-none"
+                    className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all appearance-none"
                     value={form.categoriaId}
                     onChange={(e) => setForm({ ...form, categoriaId: e.target.value })}
                     required
@@ -267,7 +267,7 @@ export default function FornecedoresPage() {
               </form>
             </div>
             <div className="p-8 bg-surface-container-low flex gap-4 rounded-tl-3xl">
-              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-white transition-all">Cancelar</button>
+              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-surface transition-all">Cancelar</button>
               <button type="submit" form="supplier-form" className="flex-[2] bg-primary text-on-primary py-3.5 rounded-full font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">Salvar</button>
             </div>
           </div>

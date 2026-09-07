@@ -1,5 +1,5 @@
 // ============================================================
-// PROJETO MAIS ALEGRIA — Entry Point
+// FESTIFY — Entry Point
 // ============================================================
 require('dotenv').config();
 
@@ -20,7 +20,7 @@ async function start() {
 
     // Inicia o servidor
     app.listen(PORT, () => {
-      console.log(`🚀 API Mais Alegria rodando em http://localhost:${PORT}`);
+      console.log(`🚀 API Festify rodando em http://localhost:${PORT}`);
       console.log(`📋 Health check: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {

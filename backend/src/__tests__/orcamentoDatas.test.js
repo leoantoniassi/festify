@@ -30,11 +30,11 @@ const mockScope = { findAndCountAll: jest.fn() };
 jest.mock('../models', () => ({
   Orcamento: {
     create: jest.fn(),
-    findByPk: jest.fn(),
+    findOne: jest.fn(),
     scope: jest.fn(() => mockScope),
   },
-  Cliente: { findByPk: jest.fn() },
-  Local: { findByPk: jest.fn() },
+  Cliente: { findOne: jest.fn() },
+  Local: { findOne: jest.fn() },
   Evento: { create: jest.fn() },
   OrcamentoProduto: { bulkCreate: jest.fn() },
 }));
@@ -105,7 +105,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
   // ==========================================================
   describe('POST /api/orcamentos', () => {
     test('deve criar orçamento com dataEvento e horarioTermino válidos → 201', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Orcamento.create.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
@@ -118,7 +118,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
     });
 
     test('deve retornar 400 se faltar dataEvento ou horarioTermino', async () => {
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
 
       const res = await request(app)
         .post('/api/orcamentos')
@@ -145,7 +145,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
 
     test('deve permitir que operador crie orçamento (role alterada)', async () => {
       mockUser = { id: 'user-2', role: 'operador' };
-      Cliente.findByPk.mockResolvedValue(mockCliente);
+      Cliente.findOne.mockResolvedValue(mockCliente);
       Orcamento.create.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
@@ -162,7 +162,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
   // ==========================================================
   describe('PUT /api/orcamentos/:id', () => {
     test('deve atualizar orçamento com novas datas válidas → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
 
       const res = await request(app)
         .put('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000')
@@ -177,7 +177,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
     });
 
     test('deve retornar 400 se horarioTermino for anterior a dataEvento no PUT', async () => {
-      Orcamento.findByPk.mockResolvedValue(
+      Orcamento.findOne.mockResolvedValue(
         makeOrcamento({
           dataEvento: '2026-12-31T10:00:00.000Z',
           horarioTermino: '2026-12-31T18:00:00.000Z',
@@ -210,7 +210,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
   // ==========================================================
   describe('POST /api/orcamentos/:id/confirmar', () => {
     test('deve converter orçamento com dataEvento e horarioTermino válidos → 200', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
       Evento.create.mockResolvedValue({ id: 'evt-1', orcamentoId: 'orc-1' });
 
       const res = await request(app)
@@ -223,7 +223,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
     });
 
     test('deve retornar 400 se orçamento não tiver dataEvento', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento({ dataEvento: null }));
+      Orcamento.findOne.mockResolvedValue(makeOrcamento({ dataEvento: null }));
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/confirmar');
@@ -233,7 +233,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
     });
 
     test('deve retornar 400 se orçamento não tiver horarioTermino', async () => {
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento({ horarioTermino: null }));
+      Orcamento.findOne.mockResolvedValue(makeOrcamento({ horarioTermino: null }));
 
       const res = await request(app)
         .post('/api/orcamentos/550e8400-e29b-41d4-a716-446655440000/confirmar');
@@ -243,7 +243,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
     });
 
     test('deve retornar 400 se dataEvento e horarioTermino estiverem invertidos', async () => {
-      Orcamento.findByPk.mockResolvedValue(
+      Orcamento.findOne.mockResolvedValue(
         makeOrcamento({
           dataEvento: '2026-12-31T18:00:00.000Z',
           horarioTermino: '2026-12-31T10:00:00.000Z',
@@ -267,7 +267,7 @@ describe('OrcamentoDatas — dataEvento e horarioTermino', () => {
 
     test('deve permitir que operador confirme orçamento (role alterada)', async () => {
       mockUser = { id: 'user-2', role: 'operador' };
-      Orcamento.findByPk.mockResolvedValue(makeOrcamento());
+      Orcamento.findOne.mockResolvedValue(makeOrcamento());
       Evento.create.mockResolvedValue({ id: 'evt-1', orcamentoId: 'orc-1' });
 
       const res = await request(app)

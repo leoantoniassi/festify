@@ -18,6 +18,7 @@ const {
 const { gerarLinkWhatsApp } = require('../utils/whatsapp');
 const { fail, warning } = require('../utils/response');
 const { isValidUUID, gerarWarningPessoas } = require('../utils/validators');
+const { saudacaoWhatsapp } = require('../utils/brand');
 
 // ─── Funções auxiliares (DRY) ──────────────────────────────────
 
@@ -52,7 +53,7 @@ function coalesce(valor, padrao) {
 
 async function buscarValorOrcamento(orcamentoId) {
   if (!orcamentoId) return null;
-  const orcamento = await Orcamento.findByPk(orcamentoId);
+  const orcamento = await Orcamento.findOne({ where: { id: orcamentoId } });
   return orcamento ? Number(orcamento.valorTotal) : null;
 }
 
@@ -133,7 +134,8 @@ async function buscarPorId(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do evento inválido.' });
     }
-    const evento = await Evento.findByPk(req.params.id, {
+    const evento = await Evento.findOne({
+      where: { id: req.params.id },
       include: [
         {
           model: Cliente,
@@ -237,7 +239,7 @@ async function criar(req, res, next) {
       }
     }
 
-    const cliente = await Cliente.findByPk(clienteId);
+    const cliente = await Cliente.findOne({ where: { id: clienteId } });
     if (!cliente) {
       return res.status(404).json({
         success: false,
@@ -248,7 +250,7 @@ async function criar(req, res, next) {
     let warnings = [];
 
     if (localId) {
-      const localExiste = await Local.findByPk(localId);
+      const localExiste = await Local.findOne({ where: { id: localId } });
       if (!localExiste) {
         return res.status(404).json({ success: false, message: "Local não encontrado." });
       }
@@ -301,7 +303,7 @@ async function atualizar(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do evento inválido.' });
     }
-    const evento = await Evento.findByPk(req.params.id);
+    const evento = await Evento.findOne({ where: { id: req.params.id } });
     if (!evento) {
       return res.status(404).json({
         success: false,
@@ -346,14 +348,14 @@ async function atualizar(req, res, next) {
     const finalQtdPessoas = somaConvidados > 0 ? somaConvidados : (qtdPessoas !== undefined ? qtdPessoas : evento.qtdPessoas);
 
     if (localId !== undefined && localId !== null) {
-      const localExiste = await Local.findByPk(localId);
+      const localExiste = await Local.findOne({ where: { id: localId } });
       if (!localExiste) {
         return res.status(404).json({ success: false, message: "Local não encontrado." });
       }
       const warnCapacidade = gerarWarningCapacidade(localExiste, finalQtdPessoas);
       if (warnCapacidade) warnings.push(warnCapacidade);
     } else if (evento.localId) {
-      const localAtual = await Local.findByPk(evento.localId);
+      const localAtual = await Local.findOne({ where: { id: evento.localId } });
       if (localAtual) {
         const warnCapacidade = gerarWarningCapacidade(localAtual, finalQtdPessoas);
         if (warnCapacidade) warnings.push(warnCapacidade);
@@ -406,7 +408,7 @@ async function mudarStatus(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do evento inválido.' });
     }
-    const evento = await Evento.findByPk(req.params.id);
+    const evento = await Evento.findOne({ where: { id: req.params.id } });
     if (!evento) {
       return res.status(404).json({
         success: false,
@@ -440,7 +442,7 @@ async function remover(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do evento inválido.' });
     }
-    const evento = await Evento.findByPk(req.params.id);
+    const evento = await Evento.findOne({ where: { id: req.params.id } });
     if (!evento) {
       return res.status(404).json({
         success: false,
@@ -473,7 +475,8 @@ async function whatsapp(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return res.status(400).json({ success: false, message: 'ID do evento inválido.' });
     }
-    const evento = await Evento.findByPk(req.params.id, {
+    const evento = await Evento.findOne({
+      where: { id: req.params.id },
       include: [{ model: Cliente, as: 'cliente' }]
     });
 
@@ -493,7 +496,7 @@ async function whatsapp(req, res, next) {
 
     const link = gerarLinkWhatsApp(
       evento.cliente.telefone,
-      `Olá ${evento.cliente.nome}, aqui é a equipe Mais Alegria falando sobre o evento "${evento.nome}".`
+      await saudacaoWhatsapp(evento.cliente.nome, `falando sobre o evento "${evento.nome}"`)
     );
 
     return res.json({

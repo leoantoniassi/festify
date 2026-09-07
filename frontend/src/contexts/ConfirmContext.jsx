@@ -57,7 +57,7 @@ export function ConfirmProvider({ children }) {
           onClick={handleCancel}
         >
           <div 
-            className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl scale-in"
+            className="bg-surface rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4 text-on-surface">
@@ -84,7 +84,7 @@ export function ConfirmProvider({ children }) {
                 onClick={handleConfirm}
                 className={`px-6 py-2.5 rounded-full font-bold shadow-md transition-all hover:scale-105 active:scale-95 ${
                   confirmState.isDanger 
-                    ? 'bg-error text-white hover:bg-error/90 shadow-error/30' 
+                    ? 'bg-error text-on-error hover:bg-error/90 shadow-error/30' 
                     : 'bg-primary text-on-primary hover:bg-primary/90 shadow-primary/30'
                 }`}
               >

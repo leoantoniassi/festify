@@ -11,6 +11,12 @@ const Escala = sequelize.define('Escala', {
     primaryKey: true,
     field: 'esc_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'esc_emp_id',
+  },
   eventoId: {
     type: DataTypes.UUID,
     allowNull: false,

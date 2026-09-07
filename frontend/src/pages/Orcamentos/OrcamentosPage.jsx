@@ -203,7 +203,7 @@ export default function OrcamentosPage() {
 
       <div className="grid grid-cols-12 gap-6 mb-8">
         {/* Table */}
-        <div className="col-span-12 lg:col-span-8 bg-white p-6 rounded-2xl shadow-sm border border-outline-variant/30">
+        <div className="col-span-12 lg:col-span-8 bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant/30">
 
           {/* Header e Filtros */}
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
@@ -347,7 +347,7 @@ export default function OrcamentosPage() {
                 </div>
                 {selected.observacoes && <p className="mt-4 text-sm opacity-80 italic">{selected.observacoes}</p>}
               </div>
-              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-surface/5 rounded-full blur-3xl" />
             </div>
           ) : (
             <div className="bg-surface-container-high rounded-2xl p-8 text-center"><span className="material-symbols-outlined text-5xl text-outline/30 mb-4">request_quote</span><p className="text-sm text-on-surface-variant">Selecione um orçamento</p></div>
@@ -358,7 +358,7 @@ export default function OrcamentosPage() {
       {/* Panel */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between"><div><h3 className="text-2xl font-headline font-extrabold">{editing ? 'Editar Orçamento' : 'Novo Orçamento'}</h3></div><button onClick={() => setShowPanel(false)} className="p-2 hover:bg-surface-container rounded-full"><span className="material-symbols-outlined">close</span></button></div>
             <div className="flex-1 overflow-y-auto p-8">
               <form id="orc-form" className="space-y-6" onSubmit={handleSave}>

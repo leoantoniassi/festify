@@ -13,6 +13,7 @@ const {
 } = require("../models");
 const { isValidUUID, gerarWarningPessoas } = require('../utils/validators');
 const { gerarLinkWhatsApp } = require('../utils/whatsapp');
+const { saudacaoWhatsapp } = require('../utils/brand');
 
 function respostaNaoEncontrado(res, mensagem = "Orçamento não encontrado.") {
   return res.status(404).json({ success: false, message: mensagem });
@@ -74,7 +75,8 @@ async function listar(req, res, next) {
 // GET /api/orcamentos/:id
 async function buscarPorId(req, res, next) {
   try {
-    const orcamento = await Orcamento.findByPk(req.params.id, {
+    const orcamento = await Orcamento.findOne({
+      where: { id: req.params.id },
       include: [
         ...includesLista,
         {
@@ -132,13 +134,13 @@ async function criar(req, res, next) {
       return respostaErro(res, 400, "O campo Total de Pessoas deve ser um número não negativo.");
     }
 
-    const cliente = await Cliente.findByPk(clienteId);
+    const cliente = await Cliente.findOne({ where: { id: clienteId } });
     if (!cliente) {
       return respostaErro(res, 404, "Cliente não encontrado.");
     }
 
     if (localId) {
-      const localExiste = await Local.findByPk(localId);
+      const localExiste = await Local.findOne({ where: { id: localId } });
       if (!localExiste) {
         return respostaErro(res, 404, "Local não encontrado.");
       }
@@ -210,7 +212,7 @@ async function atualizar(req, res, next) {
       return respostaErro(res, 400, "ID do orçamento inválido.");
     }
 
-    const orcamento = await Orcamento.findByPk(req.params.id);
+    const orcamento = await Orcamento.findOne({ where: { id: req.params.id } });
     if (!orcamento) {
       return respostaNaoEncontrado(res);
     }
@@ -218,7 +220,7 @@ async function atualizar(req, res, next) {
     const { clienteId, localId, nome, valorTotal, dataValidade, dataEvento, horarioTermino, qtdPessoas, qtdAdultos, qtdCriancas, qtdBebes, observacoes } = req.body;
 
     if (localId !== undefined && localId !== null) {
-      const localExiste = await Local.findByPk(localId);
+      const localExiste = await Local.findOne({ where: { id: localId } });
       if (!localExiste) {
         return respostaErro(res, 404, "Local não encontrado.");
       }
@@ -266,7 +268,7 @@ async function mudarStatus(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return respostaErro(res, 400, "ID do orçamento inválido.");
     }
-    const orcamento = await Orcamento.findByPk(req.params.id);
+    const orcamento = await Orcamento.findOne({ where: { id: req.params.id } });
     if (!orcamento) {
       return respostaNaoEncontrado(res);
     }
@@ -294,7 +296,7 @@ async function remover(req, res, next) {
     if (!isValidUUID(req.params.id)) {
       return respostaErro(res, 400, "ID do orçamento inválido.");
     }
-    const orcamento = await Orcamento.findByPk(req.params.id);
+    const orcamento = await Orcamento.findOne({ where: { id: req.params.id } });
     if (!orcamento) {
       return respostaNaoEncontrado(res);
     }
@@ -317,7 +319,8 @@ async function confirmarOrcamento(req, res, next) {
       return respostaErro(res, 400, "ID do orçamento inválido.");
     }
 
-    const orcamento = await Orcamento.findByPk(req.params.id, {
+    const orcamento = await Orcamento.findOne({
+      where: { id: req.params.id },
       include: [{ model: Cliente, as: "cliente" }],
     });
 
@@ -371,7 +374,7 @@ async function rejeitarOrcamento(req, res, next) {
       return respostaErro(res, 400, "ID do orçamento inválido.");
     }
 
-    const orcamento = await Orcamento.findByPk(req.params.id);
+    const orcamento = await Orcamento.findOne({ where: { id: req.params.id } });
     if (!orcamento) {
       return respostaNaoEncontrado(res);
     }
@@ -395,7 +398,8 @@ async function rejeitarOrcamento(req, res, next) {
 // GET /api/orcamentos/:id/whatsapp
 async function whatsapp(req, res, next) {
   try {
-    const orcamento = await Orcamento.findByPk(req.params.id, {
+    const orcamento = await Orcamento.findOne({
+      where: { id: req.params.id },
       include: [{ model: Cliente, as: 'cliente' }]
     });
 
@@ -409,7 +413,7 @@ async function whatsapp(req, res, next) {
 
     const link = gerarLinkWhatsApp(
       orcamento.cliente.telefone,
-      `Olá ${orcamento.cliente.nome}, aqui é a equipe Mais Alegria falando sobre o seu orçamento.`
+      await saudacaoWhatsapp(orcamento.cliente.nome, 'falando sobre o seu orçamento')
     );
 
     return res.json({

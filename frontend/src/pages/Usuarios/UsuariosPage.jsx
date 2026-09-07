@@ -158,7 +158,7 @@ export default function UsuariosPage() {
         </div>
 
         <div className="col-span-12 lg:col-span-9">
-          <div className="bg-white border border-surface-container-high rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-surface border border-surface-container-high rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -198,13 +198,13 @@ export default function UsuariosPage() {
                       </td>
                       <td className="px-6 py-5">
                         {u.status === 'pendente' ? (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 text-xs rounded-full font-semibold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-warning-container text-on-warning-container text-xs rounded-full font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
                             Pendente
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full font-semibold">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-success-container text-on-success-container text-xs rounded-full font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-success" />
                             Ativo
                           </span>
                         )}
@@ -231,7 +231,7 @@ export default function UsuariosPage() {
       {/* Painel de Convite por E-mail */}
       {showConvitePanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowConvitePanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -250,7 +250,7 @@ export default function UsuariosPage() {
               {conviteFeedback.message && (
                 <div className={`mb-6 p-4 rounded-2xl text-sm font-medium flex items-start gap-2 ${
                   conviteFeedback.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-800'
+                    ? 'bg-success-container text-on-success-container'
                     : 'bg-error-container text-on-error-container'
                 }`}>
                   <span className={`material-symbols-outlined text-lg flex-shrink-0 ${
@@ -292,7 +292,7 @@ export default function UsuariosPage() {
                     <button
                       type="button"
                       onClick={() => setFormConvite({ ...formConvite, role: 'operador' })}
-                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${formConvite.role === 'operador' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-white hover:bg-surface-container-low'}`}
+                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${formConvite.role === 'operador' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-surface hover:bg-surface-container-low'}`}
                     >
                       <span className="material-symbols-outlined">person</span>
                       <span className="font-bold">Operador</span>
@@ -301,7 +301,7 @@ export default function UsuariosPage() {
                     <button
                       type="button"
                       onClick={() => setFormConvite({ ...formConvite, role: 'gerente' })}
-                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${formConvite.role === 'gerente' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-white hover:bg-surface-container-low'}`}
+                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${formConvite.role === 'gerente' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-surface hover:bg-surface-container-low'}`}
                     >
                       <span className="material-symbols-outlined">shield_person</span>
                       <span className="font-bold">Gerente</span>
@@ -310,7 +310,7 @@ export default function UsuariosPage() {
                   </div>
                 </div>
 
-                <div className="p-4 bg-amber-50 rounded-2xl flex items-start gap-3">
+                <div className="p-4 bg-warning-container rounded-2xl flex items-start gap-3">
                   <span className="material-symbols-outlined text-amber-600 flex-shrink-0">info</span>
                   <p className="text-xs text-amber-800">
                     O colaborador receberá um e-mail com um link para definir sua senha. O link expira em <strong>24 horas</strong>.
@@ -347,7 +347,7 @@ export default function UsuariosPage() {
       {/* Slide-in Form Panel — Novo / Editar Usuário */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={e => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <h3 className="text-2xl font-headline font-extrabold">{editing ? 'Editar Usuário' : 'Novo Usuário'}</h3>
@@ -380,7 +380,7 @@ export default function UsuariosPage() {
                     <button
                       type="button"
                       onClick={() => setForm({...form, role: 'operador'})}
-                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form.role === 'operador' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-white hover:bg-surface-container-low'}`}
+                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form.role === 'operador' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-surface hover:bg-surface-container-low'}`}
                     >
                       <span className="material-symbols-outlined">person</span>
                       <span className="font-bold">Operador</span>
@@ -389,7 +389,7 @@ export default function UsuariosPage() {
                     <button
                       type="button"
                       onClick={() => setForm({...form, role: 'gerente'})}
-                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form.role === 'gerente' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-white hover:bg-surface-container-low'}`}
+                      className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${form.role === 'gerente' ? 'border-primary bg-primary/10' : 'border-surface-container-high bg-surface hover:bg-surface-container-low'}`}
                     >
                       <span className="material-symbols-outlined">shield_person</span>
                       <span className="font-bold">Gerente</span>

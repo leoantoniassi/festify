@@ -14,7 +14,7 @@ jest.mock('../models', () => ({
   Documento: {
     create: jest.fn(),
     findAll: jest.fn(),
-    findByPk: jest.fn(),
+    findOne: jest.fn(),
   },
   Cliente: {},
   Evento: {},
@@ -112,7 +112,7 @@ describe('DocumentosController e Rotas', () => {
         caminhoUrl: 'https://drive.google.com/contrato.pdf',
         update: jest.fn().mockResolvedValue(true),
       };
-      Documento.findByPk.mockResolvedValue(mockDoc);
+      Documento.findOne.mockResolvedValue(mockDoc);
 
       const res = await request(app)
         .put('/api/documentos/uuid-doc')
@@ -131,7 +131,7 @@ describe('DocumentosController e Rotas', () => {
         id: 'uuid-doc',
         update: jest.fn().mockResolvedValue(true),
       };
-      Documento.findByPk.mockResolvedValue(mockDoc);
+      Documento.findOne.mockResolvedValue(mockDoc);
 
       const res = await request(app).delete('/api/documentos/uuid-doc');
 

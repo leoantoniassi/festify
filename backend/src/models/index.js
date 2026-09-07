@@ -1,6 +1,7 @@
 // ============================================================
 // Models Index — Registra todos os modelos e suas associações
 // ============================================================
+const Empresa = require('./Empresa');
 const Usuario = require('./Usuario');
 const Cliente = require('./Cliente');
 const Local = require('./Local');
@@ -17,6 +18,18 @@ const Catalogo = require('./Catalogo');
 const Escala = require('./Escala');
 const EventoProduto = require('./EventoProduto');
 const OrcamentoProduto = require('./OrcamentoProduto');
+
+// ── Empresa (tenant) 1:N todas as entidades de negócio ───────
+// Toda linha do sistema pertence a um buffet contratante. O filtro por
+// empresaId é injetado automaticamente pelos hooks em config/database.js.
+[
+  Usuario, Cliente, Local, Funcao, CategoriaFornecedor, CategoriaProduto,
+  Funcionario, Fornecedor, Produto, Orcamento, Evento, Documento, Catalogo,
+  Escala, EventoProduto, OrcamentoProduto,
+].forEach((Model) => {
+  Empresa.hasMany(Model, { foreignKey: 'empresaId' });
+  Model.belongsTo(Empresa, { foreignKey: 'empresaId', as: 'empresa' });
+});
 
 // ── Funcao 1:N Funcionario ────────────────────────────────────
 Funcao.hasMany(Funcionario, { foreignKey: 'funcaoId', as: 'funcionarios' });
@@ -117,6 +130,7 @@ Orcamento.hasMany(OrcamentoProduto, { foreignKey: 'orcamentoId', as: 'orcamentoP
 Produto.hasMany(OrcamentoProduto, { foreignKey: 'produtoId', as: 'orcamentoProdutos' });
 
 module.exports = {
+  Empresa,
   Usuario,
   Cliente,
   Local,

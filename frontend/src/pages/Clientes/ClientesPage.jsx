@@ -152,11 +152,11 @@ export default function ClientesPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Total Ativos</p>
             <p className="text-3xl font-headline font-extrabold text-tertiary">{total}</p>
           </div>
-          <div className="md:col-span-2 bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
+          <div className="md:col-span-2 bg-surface p-6 rounded-xl border border-outline-variant/10 editorial-shadow">
             <input
               className="w-full bg-surface-container-low border-none rounded-full py-3 px-6 focus:ring-2 focus:ring-primary transition-all placeholder:text-on-surface-variant/60 text-sm"
               placeholder="Pesquisar clientes por nome ou email..."
@@ -167,7 +167,7 @@ export default function ClientesPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
+        <div className="bg-surface rounded-xl editorial-shadow overflow-hidden border border-outline-variant/10">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -211,7 +211,7 @@ export default function ClientesPage() {
                           <span className="material-symbols-outlined text-lg">edit</span>
                         </button>
                         {user?.role !== 'operador' && (
-                          <button onClick={() => handleDelete(c.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-white transition-all">
+                          <button onClick={() => handleDelete(c.id)} className="w-9 h-9 rounded-full bg-error-container/20 text-error flex items-center justify-center hover:bg-error hover:text-on-error transition-all">
                             <span className="material-symbols-outlined text-lg">delete</span>
                           </button>
                         )}
@@ -240,7 +240,7 @@ export default function ClientesPage() {
       {/* Slide-over Panel — Cadastro/Edição de Cliente */}
       {showPanel && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex justify-end fade-in" onClick={() => setShowPanel(false)}>
-          <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-lg bg-surface h-full shadow-2xl flex flex-col slide-in-right rounded-l-3xl" onClick={(e) => e.stopPropagation()}>
             <div className="p-8 border-b border-outline-variant/30 flex justify-between items-start">
               <div>
                 <h3 className="text-2xl font-headline font-extrabold text-on-surface">{editing ? 'Editar Cliente' : 'Novo Cliente'}</h3>
@@ -254,32 +254,32 @@ export default function ClientesPage() {
               <form id="client-form" className="space-y-6" onSubmit={handleSave}>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Nome Completo</label>
-                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="Ex: Maria Silva" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} required />
+                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="Ex: Maria Silva" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} required />
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Email <span className="lowercase font-normal text-on-surface-variant/60">(opcional)</span></label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" type="email" placeholder="email@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Celular</label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 98765-4321" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 98765-4321" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} required />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">Tel. Residencial <span className="lowercase font-normal text-on-surface-variant/60">(opcional)</span></label>
-                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 3333-3333" value={form.telefoneResidencial} onChange={(e) => setForm({ ...form, telefoneResidencial: e.target.value })} />
+                    <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="(11) 3333-3333" value={form.telefoneResidencial} onChange={(e) => setForm({ ...form, telefoneResidencial: e.target.value })} />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-4">CPF/CNPJ</label>
-                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-white focus:ring-2 focus:ring-primary transition-all" placeholder="000.000.000-00" value={form.rgCpf} onChange={(e) => { const raw = e.target.value; const digits = raw.replace(/\D/g, ''); if (digits.length > 14) return; setForm({ ...form, rgCpf: formatCpfCnpj(digits) }); }} required />
+                  <input className="w-full bg-surface-container-low border-none rounded-full py-3.5 px-6 focus:bg-surface focus:ring-2 focus:ring-primary transition-all" placeholder="000.000.000-00" value={form.rgCpf} onChange={(e) => { const raw = e.target.value; const digits = raw.replace(/\D/g, ''); if (digits.length > 14) return; setForm({ ...form, rgCpf: formatCpfCnpj(digits) }); }} required />
                 </div>
               </form>
             </div>
             <div className="p-8 bg-surface-container-low flex gap-4 rounded-tl-3xl">
-              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-white transition-all">Cancelar</button>
+              <button onClick={() => setShowPanel(false)} className="flex-1 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-full font-bold hover:bg-surface transition-all">Cancelar</button>
               <button type="submit" form="client-form" className="flex-[2] bg-primary text-on-primary py-3.5 rounded-full font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">Salvar</button>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default function ClientesPage() {
       {/* Modal — Enviar Catálogo por WhatsApp */}
       {showCatModal && (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-50 flex items-center justify-center fade-in px-4" onClick={() => setShowCatModal(false)}>
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md bg-surface rounded-3xl shadow-2xl flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="p-7 border-b border-outline-variant/30 flex justify-between items-start">
               <div>

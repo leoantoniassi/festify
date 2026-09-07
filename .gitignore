@@ -1,7 +1,100 @@
-node_modules/
+# ============================================================
+# Festify - Git Ignore Rules
+# ============================================================
+
+# ── Variáveis de Ambiente e Segredos ───────────────────────────
+# Bloqueia todos os arquivos com credenciais, senhas e variáveis de ambiente sensíveis
 .env
-.DS_Store
+.env.*
+*.env
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# Preserva explicitamente exemplos de configuração não-sensíveis
+!.env.example
+!**/.env.example
+
+# Chaves privadas, certificados e credenciais de autenticação
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+credentials.json
+service-account*.json
+
+# ── Dependências de Pacotes ────────────────────────────────────
+node_modules/
+jspm_packages/
+.pnp
+.pnp.js
+
+# ── Builds, Artefatos e Saídas de Compilação ───────────────────
 dist/
 build/
+out/
+.vite/
+*.tsbuildinfo
+
+# ── Testes e Relatórios de Cobertura ───────────────────────────
 coverage/
+.nyc_output/
+
+# ── Logs e Registros de Execução ───────────────────────────────
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Uploads Locais e Armazenamento ─────────────────────────────
+backend/uploads/*
+!backend/uploads/.gitkeep
+uploads/
+storage/
+!**/.gitkeep
+
+# ── Dumps, Backups e Dados Locais de Banco ─────────────────────
+*.dump
+*.backup
+*.sql.gz
+
+# ── Arquivos de Sistema Operacional ────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDEs e Editores de Código ──────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.bak
+*~
+
+# ── Arquivos Temporários, Scratch e IA ─────────────────────────
+scratch/
+tmp/
+temp/
+.gemini/
+
+# ── Repositório Clonado Aninhado ───────────────────────────────
+festify/

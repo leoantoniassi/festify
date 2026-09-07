@@ -9,7 +9,7 @@ jest.mock('../models', () => ({
     create: jest.fn(),
     findAll: jest.fn(),
     findAndCountAll: jest.fn(),
-    findByPk: jest.fn(),
+    findOne: jest.fn(),
   },
 }));
 
@@ -108,7 +108,7 @@ describe('LocalController — capacidadeMaxima', () => {
 
     test('deve buscar local por id retornando capacidadeMaxima', async () => {
       const mockLocal = { id: '1', nome: 'Salão A', capacidadeMaxima: 150 };
-      Local.findByPk.mockResolvedValue(mockLocal);
+      Local.findOne.mockResolvedValue(mockLocal);
 
       const res = await request(app).get('/api/locais/1');
 

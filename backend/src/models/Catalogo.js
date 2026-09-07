@@ -11,6 +11,12 @@ const Catalogo = sequelize.define('Catalogo', {
     primaryKey: true,
     field: 'cat_id',
   },
+  // FK para empresas (tenant)
+  empresaId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    field: 'cat_emp_id',
+  },
   titulo: {
     type: DataTypes.STRING(200),
     allowNull: false,

@@ -15,7 +15,7 @@ export default function Toast({ message, type = 'success', onClose }) {
   const bg = type === 'success'
     ? 'bg-secondary text-on-secondary'
     : type === 'warning'
-      ? 'bg-[#E65100] text-white'
+      ? 'bg-warning text-on-warning'
       : 'bg-error text-on-error';
   const icon = type === 'success'
     ? 'check_circle'
@@ -31,7 +31,7 @@ export default function Toast({ message, type = 'success', onClose }) {
     >
       <span className="material-symbols-outlined filled text-lg">{icon}</span>
       <span className="text-sm font-bold">{message}</span>
-      <button onClick={() => { setVisible(false); setTimeout(onClose, 300); }} className="ml-2 p-0.5 rounded-full hover:bg-white/20 transition-colors">
+      <button onClick={() => { setVisible(false); setTimeout(onClose, 300); }} className="ml-2 p-0.5 rounded-full hover:bg-surface/20 transition-colors">
         <span className="material-symbols-outlined text-base">close</span>
       </button>
     </div>

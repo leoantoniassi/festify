@@ -54,7 +54,7 @@ async function alocar(req, res, next) {
     }
 
     // Verifica se evento existe
-    const evento = await Evento.findByPk(eventoId);
+    const evento = await Evento.findOne({ where: { id: eventoId } });
     if (!evento) {
       return res.status(404).json({
         success: false,
@@ -63,7 +63,7 @@ async function alocar(req, res, next) {
     }
 
     // Verifica se funcionário existe
-    const funcionario = await Funcionario.findByPk(funcionarioId);
+    const funcionario = await Funcionario.findOne({ where: { id: funcionarioId } });
     if (!funcionario) {
       return res.status(404).json({
         success: false,
@@ -103,7 +103,8 @@ async function alocar(req, res, next) {
     const escala = await Escala.create({ eventoId, funcionarioId, observacoes });
 
     // Retorna com dados completos
-    const escalaCriada = await Escala.findByPk(escala.id, {
+    const escalaCriada = await Escala.findOne({
+      where: { id: escala.id },
       include: [
         { model: Evento, as: 'evento', attributes: ['id', 'nome', 'dataEvento', 'horarioTermino'] },
         { model: Funcionario, as: 'funcionario', attributes: ['id', 'nome', 'funcao'] },
@@ -123,7 +124,7 @@ async function alocar(req, res, next) {
 // DELETE /api/escala/:id
 async function remover(req, res, next) {
   try {
-    const escala = await Escala.findByPk(req.params.id);
+    const escala = await Escala.findOne({ where: { id: req.params.id } });
     if (!escala) {
       return res.status(404).json({
         success: false,
@@ -167,7 +168,7 @@ async function listarPorEvento(req, res, next) {
 // Retorna funcionários disponíveis para o evento respeitando gap mínimo de 2h
 async function listarDisponiveis(req, res, next) {
   try {
-    const evento = await Evento.findByPk(req.params.eventoId);
+    const evento = await Evento.findOne({ where: { id: req.params.eventoId } });
     if (!evento) {
       return res.status(404).json({ success: false, message: 'Evento não encontrado.' });
     }
@@ -245,7 +246,7 @@ async function alocarLote(req, res, next) {
       });
     }
 
-    const evento = await Evento.findByPk(eventoId);
+    const evento = await Evento.findOne({ where: { id: eventoId } });
     if (!evento) {
       return res.status(404).json({ success: false, message: 'Evento não encontrado.' });
     }
@@ -257,7 +258,7 @@ async function alocarLote(req, res, next) {
     const criados = [];
 
     for (const funcionarioId of funcionarioIds) {
-      const funcionario = await Funcionario.findByPk(funcionarioId);
+      const funcionario = await Funcionario.findOne({ where: { id: funcionarioId } });
       if (!funcionario) { erros.push(`Funcionário ${funcionarioId} não encontrado.`); continue; }
 
       const escalasPeriodo = await buscarEscalasNoPeriodo(funcionarioId, eventoId, inicioA, fimA);
