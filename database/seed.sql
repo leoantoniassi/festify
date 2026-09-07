@@ -9,6 +9,36 @@ TRUNCATE
     locais, funcoes, categorias_fornecedor, categorias_produto
 RESTART IDENTITY CASCADE;
 
+-- Garante empresa inaugural e resolve tenant para os inserts
+DO $$
+DECLARE
+    v_emp_id UUID;
+BEGIN
+    INSERT INTO empresas (emp_nome, emp_nome_fantasia, emp_slug)
+    VALUES ('Mais Alegria', 'Mais Alegria', 'mais-alegria')
+    ON CONFLICT (emp_slug) DO NOTHING;
+
+    SELECT emp_id INTO v_emp_id FROM empresas WHERE emp_slug = 'mais-alegria';
+
+    -- Aplica DEFAULT temporário para tabelas multilocadas
+    EXECUTE 'ALTER TABLE usuarios ALTER COLUMN usr_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE locais ALTER COLUMN loc_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE funcoes ALTER COLUMN fnc_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE categorias_fornecedor ALTER COLUMN caf_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE categorias_produto ALTER COLUMN cap_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE clientes ALTER COLUMN cli_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE fornecedores ALTER COLUMN for_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE funcionarios ALTER COLUMN fun_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE produtos ALTER COLUMN prd_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE orcamentos ALTER COLUMN orc_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE eventos ALTER COLUMN evt_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE documentos ALTER COLUMN doc_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE escala ALTER COLUMN esc_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE evento_produto ALTER COLUMN evp_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE orcamento_produto ALTER COLUMN orp_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+    EXECUTE 'ALTER TABLE catalogos ALTER COLUMN cat_emp_id SET DEFAULT ' || quote_literal(v_emp_id);
+END $$;
+
 -- 0. USUARIOS
 INSERT INTO usuarios (usr_nome, usr_email, usr_senha, usr_role) VALUES
 ('Gerente',  'gerente@festify.com',  '$2a$10$Nq.Tgkmz8Dz4/s9KWP.NDOSD33LH4pGBrGsnd5R3F/kqoymkRpyoa', 'gerente'),
@@ -341,4 +371,28 @@ INSERT INTO catalogos (cat_titulo, cat_descricao, cat_preco_base, cat_ativo) VAL
 ('Pacote Batizado Premium', 'Descrição completa do pacote para Batizado do Samuel', 3013.00, true),
 ('Pacote Despedida Premium', 'Descrição completa do pacote para Despedida de Solteiro(a)', 2237.00, true),
 ('Pacote Festa Premium', 'Descrição completa do pacote para Festa de Fim de Ano', 4363.00, true);
+
+-- Remove defaults temporários após os inserts
+DO $$
+BEGIN
+    ALTER TABLE usuarios ALTER COLUMN usr_emp_id DROP DEFAULT;
+    ALTER TABLE locais ALTER COLUMN loc_emp_id DROP DEFAULT;
+    ALTER TABLE funcoes ALTER COLUMN fnc_emp_id DROP DEFAULT;
+    ALTER TABLE categorias_fornecedor ALTER COLUMN caf_emp_id DROP DEFAULT;
+    ALTER TABLE categorias_produto ALTER COLUMN cap_emp_id DROP DEFAULT;
+    ALTER TABLE clientes ALTER COLUMN cli_emp_id DROP DEFAULT;
+    ALTER TABLE fornecedores ALTER COLUMN for_emp_id DROP DEFAULT;
+    ALTER TABLE funcionarios ALTER COLUMN fun_emp_id DROP DEFAULT;
+    ALTER TABLE produtos ALTER COLUMN prd_emp_id DROP DEFAULT;
+    ALTER TABLE orcamentos ALTER COLUMN orc_emp_id DROP DEFAULT;
+    ALTER TABLE eventos ALTER COLUMN evt_emp_id DROP DEFAULT;
+    ALTER TABLE documentos ALTER COLUMN doc_emp_id DROP DEFAULT;
+    ALTER TABLE escala ALTER COLUMN esc_emp_id DROP DEFAULT;
+    ALTER TABLE evento_produto ALTER COLUMN evp_emp_id DROP DEFAULT;
+    ALTER TABLE orcamento_produto ALTER COLUMN orp_emp_id DROP DEFAULT;
+    ALTER TABLE catalogos ALTER COLUMN cat_emp_id DROP DEFAULT;
+EXCEPTION WHEN OTHERS THEN
+    NULL;
+END $$;
+
 
