@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Navigate } from 'react-router-dom';
 import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { derivarPaleta, contraste, ehHexValido, PALETA_PADRAO } from '../../utils/theme';
 import Toast from '../../components/Toast';
@@ -31,11 +33,17 @@ const AMOSTRAS = [
   { token: 'tertiary', sobre: 'on-tertiary', label: 'Terciária' },
   { token: 'primary-container', sobre: 'on-primary-container', label: 'Container' },
   { token: 'surface-container', sobre: 'on-surface', label: 'Superfície' },
-  { token: 'chart-1', sobre: 'surface', label: 'Gráfico' },
+  { token: 'chart-1', sobre: 'surface', label: 'Gráficos' },
 ];
 
 export default function ConfiguracoesPage() {
+  const { user } = useAuth();
   const { config, atualizarConfig, aplicarPreview, descartarPreview } = useTheme();
+
+  // Apenas gerentes podem visualizar e alterar as configurações de identidade visual
+  if (user && user.role !== 'gerente') {
+    return <Navigate to="/" replace />;
+  }
 
   const [form, setForm] = useState({ nomeFantasia: '', logoUrl: '', cores: PALETA_PADRAO });
   const [salvando, setSalvando] = useState(false);
@@ -234,8 +242,8 @@ export default function ConfiguracoesPage() {
         </div>
 
         {/* ─── Coluna direita: preview ───────────────────────── */}
-        <aside className="space-y-6">
-          <section className="bg-surface p-6 rounded-3xl editorial-shadow border border-outline-variant/10 lg:sticky lg:top-24">
+        <aside className="space-y-6 lg:sticky lg:top-24 self-start">
+          <section className="bg-surface p-6 rounded-3xl editorial-shadow border border-outline-variant/10">
             <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-6">Pré-visualização</h3>
 
             <div className="flex items-center gap-3 mb-6">
@@ -261,6 +269,23 @@ export default function ConfiguracoesPage() {
                   </span>
                 </div>
               ))}
+            </div>
+
+            <div className="p-3 rounded-2xl bg-surface-container-low mb-4 border border-outline-variant/20">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant block mb-2">Exemplo nos Gráficos</span>
+              <div className="flex items-end gap-1.5 h-10 px-1">
+                {[paleta['chart-1'], paleta['chart-2'], paleta['chart-3'], paleta.secondary, paleta.tertiary, paleta.primary].map((cor, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-t transition-all duration-300"
+                    style={{
+                      height: `${[40, 75, 55, 90, 65, 80][i]}%`,
+                      backgroundColor: cor,
+                    }}
+                    title={`Cor ${i + 1}`}
+                  />
+                ))}
+              </div>
             </div>
 
             <button

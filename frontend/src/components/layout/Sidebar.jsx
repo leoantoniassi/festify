@@ -15,7 +15,6 @@ const navItems = [
   { to: '/catalogos', icon: 'menu_book', label: 'Catálogos' },
   { to: '/cadastros', icon: 'tune', label: 'Cadastros' },
   { to: '/usuarios', icon: 'admin_panel_settings', label: 'Usuários' },
-  { to: '/configuracoes', icon: 'palette', label: 'Identidade Visual' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -51,7 +50,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Bloco Central: Nav Items com Rolagem se faltar tela */}
         <nav className="flex-1 overflow-y-auto px-6 py-2 space-y-1 custom-scrollbar">
-          {navItems.filter(item => !['/usuarios', '/cadastros', '/configuracoes'].includes(item.to) || user?.role === 'gerente').map(({ to, icon, label }) => (
+          {navItems.filter(item => !['/usuarios', '/cadastros'].includes(item.to) || user?.role === 'gerente').map(({ to, icon, label }) => (
             <NavLink
               key={to}
               to={to}

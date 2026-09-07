@@ -1,6 +1,7 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import GlobalSearch from "./GlobalSearch";
+import SettingsMenu from "./SettingsMenu";
 
 export default function TopNav({ onMenuClick }) {
   const { user, logout } = useAuth();
@@ -30,11 +31,8 @@ export default function TopNav({ onMenuClick }) {
 
       {/* Right Actions */}
       <div className="flex items-center gap-3 md:gap-6">
-        <div className="flex items-center gap-2 md:gap-4 text-on-surface-variant">
-          <button className="hidden sm:block hover:text-tertiary transition-all">
-            <span className="material-symbols-outlined">settings</span>
-          </button>
-        </div>
+        {/* Menu de Configurações / Ferramentas */}
+        <SettingsMenu />
 
         <div className="h-8 w-[1px] bg-outline-variant/30" />
 

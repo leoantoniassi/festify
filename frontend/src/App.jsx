@@ -42,6 +42,15 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function RoleRoute({ role, children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user || user.role !== role) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
 function LoginRoute() {
   const { isAuthenticated, loading } = useAuth();
 
@@ -81,8 +90,22 @@ function AppRoutes() {
         <Route path="documentos" element={<DocumentosPage />} />
         <Route path="catalogos" element={<CatalogosPage />} />
         <Route path="cadastros" element={<CadastrosPage />} />
-        <Route path="usuarios" element={<UsuariosPage />} />
-        <Route path="configuracoes" element={<ConfiguracoesPage />} />
+        <Route
+          path="usuarios"
+          element={
+            <RoleRoute role="gerente">
+              <UsuariosPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="configuracoes"
+          element={
+            <RoleRoute role="gerente">
+              <ConfiguracoesPage />
+            </RoleRoute>
+          }
+        />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

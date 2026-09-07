@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   ScatterChart, Scatter,
   AreaChart, Area,
-  BarChart, Bar,
+  BarChart, Bar, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import api from '../../services/api';
@@ -45,6 +45,21 @@ export default function DashboardCharts() {
     background: cores.surface,
     color: cores['on-surface'],
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+  };
+
+  // Paleta de cores do gráfico alternando com base no padrão configurado pelo cliente
+  const paletaGrafico = [
+    cores['chart-1'],
+    cores['chart-2'],
+    cores['chart-3'],
+    cores.secondary,
+    cores.tertiary,
+    cores.primary,
+  ].filter(Boolean);
+
+  const obterCorGrafico = (indice) => {
+    if (!paletaGrafico.length) return cores['chart-1'] || '#FEDC57';
+    return paletaGrafico[indice % paletaGrafico.length];
   };
 
   return (
@@ -93,8 +108,15 @@ export default function DashboardCharts() {
                 cursor={{ fill: cores['outline-variant'], fillOpacity: 0.25 }}
                 contentStyle={estiloTooltip}
               />
-              {/* Uma série, uma cor: os locais já se distinguem pelo eixo X. */}
-              <Bar dataKey="value" name="Quantidade" fill={cores['chart-1']} radius={[4, 4, 0, 0]} maxBarSize={45} />
+              {/* As cores das barras alternam dinamicamente respeitando a paleta do tema configurado */}
+              <Bar dataKey="value" name="Quantidade" radius={[4, 4, 0, 0]} maxBarSize={45}>
+                {data.infra.map((entry, index) => (
+                  <Cell
+                    key={`cell-${entry.name || index}`}
+                    fill={obterCorGrafico(index)}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -130,15 +152,21 @@ export default function DashboardCharts() {
                   return null;
                 }}
               />
-              {/* Anel de superfície separa pontos sobrepostos. */}
+              {/* Anel de superfície separa pontos sobrepostos com alternância de cores da marca */}
               <Scatter
                 name="Festas"
                 data={data.scatter}
-                fill={cores['chart-2']}
-                fillOpacity={0.8}
+                fillOpacity={0.85}
                 stroke={cores.surface}
                 strokeWidth={2}
-              />
+              >
+                {data.scatter.map((entry, index) => (
+                  <Cell
+                    key={`scatter-cell-${entry.nome || index}`}
+                    fill={obterCorGrafico((index + 1) % (paletaGrafico.length || 1))}
+                  />
+                ))}
+              </Scatter>
             </ScatterChart>
           </ResponsiveContainer>
         )}
