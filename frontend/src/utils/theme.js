@@ -178,9 +178,9 @@ function papel(hex) {
 // ── API pública ──────────────────────────────────────────────
 
 export const PALETA_PADRAO = {
-  primaria: '#FEDC57',
-  secundaria: '#7DBA00',
-  terciaria: '#6600A1',
+  primaria: '#1CEAFF',
+  secundaria: '#FF45FF',
+  terciaria: '#1F357F',
 };
 
 /**

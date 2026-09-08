@@ -1,29 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #FEDC57;
-  --color-on-primary: #402d00;
-  --color-primary-container: #fff1db;
-  --color-on-primary-container: #584000;
-  --color-secondary: #7DBA00;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #d6f599;
-  --color-on-secondary-container: #233600;
-  --color-tertiary: #6600A1;
+  --color-primary: #1CEAFF;
+  --color-on-primary: #021a1d;
+  --color-primary-container: #a9f3fd;
+  --color-on-primary-container: #021a1d;
+  --color-secondary: #FF45FF;
+  --color-on-secondary: #29012a;
+  --color-secondary-container: #ffd5fd;
+  --color-on-secondary-container: #29012a;
+  --color-tertiary: #1F357F;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #f0e6ff;
-  --color-on-tertiary-container: #24003d;
-  --color-background: #fdfcf5;
+  --color-tertiary-container: #dae5fe;
+  --color-on-tertiary-container: #04034f;
+  --color-background: #fafcfd;
   --color-surface: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f7f4ea;
-  --color-surface-container: #f1eee4;
-  --color-surface-container-high: #ebe8de;
-  --color-surface-container-highest: #e5e2d8;
-  --color-on-surface: #1d1c16;
-  --color-on-surface-variant: #4a4639;
-  --color-outline: #7b7768;
-  --color-outline-variant: #cbc7b6;
+  --color-surface-container-low: #f3f6f6;
+  --color-surface-container: #ecefef;
+  --color-surface-container-high: #dfeaec;
+  --color-surface-container-highest: #d9e4e5;
+  --color-on-surface: #020708;
+  --color-on-surface-variant: #21373a;
+  --color-outline: #566e71;
+  --color-outline-variant: #b0cacd;
   /* Cores de estado. Não acompanham a marca do buffet: o significado
      ("aprovado", "cancelado") vale mais que a identidade visual, e o
      usuário aprende a associá-las. Todos os pares passam em WCAG AA. */

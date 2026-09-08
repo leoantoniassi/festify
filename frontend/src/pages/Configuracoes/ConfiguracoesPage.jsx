@@ -99,9 +99,14 @@ export default function ConfiguracoesPage() {
 
     setSalvando(true);
     try {
+      let urlTratada = form.logoUrl.trim();
+      if (urlTratada && !/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(urlTratada) && !/^\/\//.test(urlTratada)) {
+        urlTratada = `https://${urlTratada}`;
+      }
+
       const { data } = await api.put('/tenant/config', {
         nomeFantasia: form.nomeFantasia.trim(),
-        logoUrl: form.logoUrl.trim() || null,
+        logoUrl: urlTratada || null,
         cores: form.cores,
       });
       atualizarConfig(data.data);
@@ -169,8 +174,8 @@ export default function ConfiguracoesPage() {
                 </label>
                 <input
                   id="logoUrl"
-                  type="url"
-                  maxLength={255}
+                  type="text"
+                  maxLength={2048}
                   className="w-full h-14 px-5 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline"
                   placeholder="https://seusite.com.br/logo.png"
                   value={form.logoUrl}
@@ -247,7 +252,7 @@ export default function ConfiguracoesPage() {
             <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-6">Pré-visualização</h3>
 
             <div className="flex items-center gap-3 mb-6">
-              <BrandLogo tamanho="md" />
+              <BrandLogo tamanho="md" logoUrl={form.logoUrl} nomeFantasia={form.nomeFantasia} />
               <div>
                 <p className="font-headline font-extrabold text-on-surface leading-none">
                   {form.nomeFantasia || 'Seu Buffet'}
